@@ -110,6 +110,15 @@ def add_payment_method():
         return redirect(url_for('admin.payment_methods'))
     return render_template('admin/payment_methods.html', form=form)
 
+@admin.route('/payment-method/delete/<int:method_id>', methods=['POST'])
+@admin_required
+def delete_payment_method(method_id):
+    method = PaymentMethod.query.get_or_404(method_id)
+    db.session.delete(method)
+    db.session.commit()
+    flash('Метод оплати видалено', 'success')
+    return redirect(url_for('admin.payment_methods'))
+
 @admin.route('/payments')
 @admin_required
 def payments():
