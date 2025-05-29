@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
-{% block title %}Історія оплат{% endblock %}
+{% block title %}{{ _('Історія оплат') }}{% endblock %}
 
 {% block content %}
 <div class="page-container">
-  <h1>Історія оплат</h1>
+  <h1>{{ _('Історія оплат') }}</h1>
   <ul>
     {% for payment in payments %}
       <li>
-        {{ payment.created_at }} | {{ payment.user_name }} | {{ payment.amount }} | {{ payment.status }}
+        {{ payment.created_at }} | {{ payment.user_name }} | {{ payment.amount }} | {{ _(payment.status) }}
       </li>
     {% endfor %}
   </ul>

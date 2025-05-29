@@ -20,11 +20,15 @@
     <form method="POST" enctype="multipart/form-data">
       {{ form.hidden_tag() }}
       <div>{{ form.name.label }} {{ form.name() }}</div>
+      <div>{{ form.name_en.label }} {{ form.name_en() }}</div>
+      <div>{{ form.name_de.label }} {{ form.name_de() }}</div>
+      <div>{{ form.name_ru.label }} {{ form.name_ru() }}</div>
       <div>{{ form.type.label }} {{ form.type() }}</div>
       <div>{{ form.details.label }} {{ form.details() }}</div>
       <div>{{ form.qr_code.label }} {{ form.qr_code() }}</div>
       <div>{{ form.description_ua.label }} {{ form.description_ua() }}</div>
       <div>{{ form.description_en.label }} {{ form.description_en() }}</div>
+      <div>{{ form.description_de.label }} {{ form.description_de() }}</div>
       <div>{{ form.description_ru.label }} {{ form.description_ru() }}</div>
       <div>{{ form.is_active.label }} {{ form.is_active() }}</div>
       <button type="submit" class="btn btn-success">Зберегти</button>

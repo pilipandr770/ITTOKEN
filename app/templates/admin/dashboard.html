@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
-{% block title %}Адмінка{% endblock %}
+{% block title %}{{ _('Адмінка') }}{% endblock %}
 
 {% block content %}
 <div class="page-container">
-  <h1>Адмін-панель</h1>
+  <h1>{{ _('Адмін-панель') }}</h1>
   <ul>
-    <li><a href="{{ url_for('admin.blocks') }}">Блоки сайту</a></li>
-    <li><a href="{{ url_for('admin.payment_methods') }}">Способи оплати</a></li>
-    <li><a href="{{ url_for('admin.payments') }}">Історія оплат</a></li>
-    <li><a href="{{ url_for('admin.settings') }}">Налаштування соцмереж</a></li>
-    <li><a href="{{ url_for('admin.logout') }}">Вийти</a></li>
+    <li><a href="{{ url_for('admin.blocks') }}">{{ _('Блоки сайту') }}</a></li>
+    <li><a href="{{ url_for('admin.payment_methods') }}">{{ _('Способи оплати') }}</a></li>
+    <li><a href="{{ url_for('admin.payments') }}">{{ _('Історія оплат') }}</a></li>
+    <li><a href="{{ url_for('admin.settings') }}">{{ _('Налаштування соцмереж') }}</a></li>
+    <li><a href="{{ url_for('admin.logout') }}">{{ _('Вийти') }}</a></li>
   </ul>
-  <h2>Останні оплати</h2>
+  <h2>{{ _('Останні оплати') }}</h2>
   <ul>
     {% for payment in payments %}
-      <li>{{ payment.created_at }}: {{ payment.amount }} ({{ payment.status }})</li>
+      <li>{{ payment.created_at }}: {{ payment.amount }} ({{ _(payment.status) }})</li>
     {% endfor %}
   </ul>
 </div>

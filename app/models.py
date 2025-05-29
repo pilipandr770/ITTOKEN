@@ -20,6 +20,14 @@ class Block(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     slug = db.Column(db.String(64), unique=True)
     is_top = db.Column(db.Boolean, default=False)  # Нове поле: головний блок
+    title_ua = db.Column(db.String(128))
+    title_en = db.Column(db.String(128))
+    title_de = db.Column(db.String(128))
+    title_ru = db.Column(db.String(128))
+    content_ua = db.Column(db.Text)
+    content_en = db.Column(db.Text)
+    content_de = db.Column(db.Text)
+    content_ru = db.Column(db.Text)
 
 class PaymentMethod(db.Model):
     """Метод оплати (Stripe, PayPal, N26, QR, тощо)"""
@@ -28,8 +36,13 @@ class PaymentMethod(db.Model):
     type = db.Column(db.String(32))
     details = db.Column(db.JSON)
     qr_code = db.Column(db.String(256))
+    name_ua = db.Column(db.String(64))
+    name_en = db.Column(db.String(64))
+    name_de = db.Column(db.String(64))
+    name_ru = db.Column(db.String(64))
     description_ua = db.Column(db.Text)
     description_en = db.Column(db.Text)
+    description_de = db.Column(db.Text)
     description_ru = db.Column(db.Text)
     is_active = db.Column(db.Boolean, default=True)
     order = db.Column(db.Integer, default=1)

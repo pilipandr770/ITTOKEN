@@ -20,7 +20,13 @@
       <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <div style="margin-bottom:1em;">{{ form.title.label }}<br>{{ form.title(class_='form-control', style='width:100%;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.title_en.label }}<br>{{ form.title_en(class_='form-control', style='width:100%;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.title_de.label }}<br>{{ form.title_de(class_='form-control', style='width:100%;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.title_ru.label }}<br>{{ form.title_ru(class_='form-control', style='width:100%;') }}</div>
         <div style="margin-bottom:1em;">{{ form.content.label }}<br>{{ form.content(class_='form-control', style='width:100%;min-height:120px;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.content_en.label }}<br>{{ form.content_en(class_='form-control', style='width:100%;min-height:120px;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.content_de.label }}<br>{{ form.content_de(class_='form-control', style='width:100%;min-height:120px;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.content_ru.label }}<br>{{ form.content_ru(class_='form-control', style='width:100%;min-height:120px;') }}</div>
         <div style="margin-bottom:1em;">{{ form.image.label }}<br>{{ form.image(class_='form-control') }}</div>
         <div style="margin-bottom:1em;">{{ form.is_active() }} {{ form.is_active.label }}</div>
         <div style="margin-bottom:1em;">{{ form.is_top() }} {{ form.is_top.label }}</div>

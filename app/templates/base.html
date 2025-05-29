@@ -20,11 +20,22 @@
         <a href="{{ settings.telegram if settings and settings.telegram else 'https://t.me/' }}" target="_blank" title="Telegram"><img src="{{ url_for('static', filename='img/telegram.svg') }}" alt="Telegram" style="height:24px;vertical-align:middle;"></a>
         <a href="mailto:{{ settings.email if settings and settings.email else 'info@example.com' }}" title="Email"><img src="{{ url_for('static', filename='img/email.svg') }}" alt="Email" style="height:24px;vertical-align:middle;"></a>
         <!-- Перемикач мов -->
-        <span style="margin-left:2em;">
-          <a href="{{ url_for('main.index', lang='uk') }}" {% if g.get('lang', 'uk') == 'uk' %}style="font-weight:bold;"{% endif %}>Укр</a> |
-          <a href="{{ url_for('main.index', lang='en') }}" {% if g.get('lang') == 'en' %}style="font-weight:bold;"{% endif %}>Eng</a> |
-          <a href="{{ url_for('main.index', lang='de') }}" {% if g.get('lang') == 'de' %}style="font-weight:bold;"{% endif %}>Deu</a>
-        </span>
+        <form id="lang-switcher-form" method="get" style="display:inline;margin-left:2em;">
+          <select name="lang" id="lang-switcher" style="padding:4px 10px;border-radius:6px;border:1px solid #ddd;font-size:1em;">
+            <option value="uk" {% if g.get('lang', 'uk') == 'uk' %}selected{% endif %}>UA</option>
+            <option value="en" {% if g.get('lang') == 'en' %}selected{% endif %}>EN</option>
+            <option value="de" {% if g.get('lang') == 'de' %}selected{% endif %}>DE</option>
+            <option value="ru" {% if g.get('lang') == 'ru' %}selected{% endif %}>RU</option>
+          </select>
+        </form>
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            var langSel = document.getElementById('lang-switcher');
+            langSel.addEventListener('change', function() {
+              document.getElementById('lang-switcher-form').submit();
+            });
+          });
+        </script>
       </nav>
     </header>
 
