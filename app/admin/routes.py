@@ -54,7 +54,6 @@ def blocks():
 @admin.route('/block/edit/<int:block_id>', methods=['GET', 'POST'])
 @admin_required
 def edit_block(block_id):
-    """Редагування блоку"""
     import os
     from werkzeug.utils import secure_filename
     block = Block.query.get_or_404(block_id)
@@ -62,14 +61,16 @@ def edit_block(block_id):
     if form.validate_on_submit():
         form.populate_obj(block)
         # Обробка зображення
-        if form.image.data:
+        if form.image.data and hasattr(form.image.data, 'filename') and form.image.data.filename:
             file = form.image.data
-            if hasattr(file, 'filename') and file.filename:
-                filename = secure_filename(file.filename)
-                upload_folder = os.path.join('app', 'static', 'uploads')
-                os.makedirs(upload_folder, exist_ok=True)
-                file.save(os.path.join(upload_folder, filename))
-                block.image = filename
+            filename = secure_filename(file.filename)
+            upload_folder = os.path.join('app', 'static', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            file.save(os.path.join(upload_folder, filename))
+            block.image = filename
+        elif form.image.data and hasattr(form.image.data, 'filename') and not form.image.data.filename:
+            # Якщо файл не вибрано, не змінювати поле image
+            pass
         db.session.commit()
         flash('Блок збережено', 'success')
         return redirect(url_for('admin.blocks'))

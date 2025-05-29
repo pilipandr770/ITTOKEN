@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
+
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #f7fafd;
@@ -43,6 +45,7 @@ nav a:hover {
     text-align: center;
     transition: box-shadow 0.2s, transform 0.2s;
     margin-bottom: 1em;
+    font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
 }
 .block-card:hover {
     box-shadow: 0 4px 24px #b3d8ff;
@@ -60,6 +63,7 @@ nav a:hover {
     box-shadow: 0 4px 24px #b3d8ff;
     border: 2px solid #b3d8ff;
     margin-bottom: 2em;
+    font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
 }
 
 .payment-methods {
@@ -165,6 +169,10 @@ footer#site-footer a:hover {
     padding: 2em 1.5em;
     margin: 2em auto;
     max-width: 900px;
+}
+
+.block-card h3, .block-card-top h2, .block-card-top h3, .block-card-top p, .block-card p {
+    text-decoration: none !important;
 }
 
 @media (max-width: 900px) {
