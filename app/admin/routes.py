@@ -87,10 +87,23 @@ def payment_methods():
 @admin_required
 def add_payment_method():
     """Додавання нового способу оплати"""
+    import os
+    from werkzeug.utils import secure_filename
     form = PaymentMethodForm()
     if form.validate_on_submit():
         method = PaymentMethod()
         form.populate_obj(method)
+        # Обробка файлу QR-коду
+        if form.qr_code.data and hasattr(form.qr_code.data, 'filename') and form.qr_code.data.filename:
+            file = form.qr_code.data
+            filename = secure_filename(file.filename)
+            upload_folder = os.path.join('app', 'static', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            file.save(os.path.join(upload_folder, filename))
+            method.qr_code = filename
+        elif form.qr_code.data and hasattr(form.qr_code.data, 'filename') and not form.qr_code.data.filename:
+            # Якщо файл не вибрано, не змінювати поле qr_code
+            pass
         db.session.add(method)
         db.session.commit()
         flash('Метод оплати додано', 'success')
