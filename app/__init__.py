@@ -19,8 +19,10 @@ def create_app():
     # Підключення blueprint'ів
     from app.main.routes import main
     from app.admin.routes import admin
+    from .assist import assist_bp
     app.register_blueprint(main)
     app.register_blueprint(admin, url_prefix='/admin')
+    app.register_blueprint(assist_bp)
 
     return app
 

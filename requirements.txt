@@ -7,3 +7,6 @@ Werkzeug
 gunicorn
 WeasyPrint
 qrcode
+requests
+openai
+python-dotenv

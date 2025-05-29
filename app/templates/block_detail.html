@@ -5,7 +5,7 @@
   <div class="block-detail">
     <h1>{{ block.title }}</h1>
     {% if block.image %}
-      <img src="{{ url_for('static', filename='uploads/' ~ block.image) }}" alt="{{ block.title }}">
+      <img src="{{ url_for('static', filename='uploads/' ~ block.image) }}" alt="{{ block.title }}" style="display:block;margin:0 auto 1.5em auto;max-width:350px;float:none;">
     {% endif %}
     <div>{{ block.content|safe }}</div>
     {% if block.slug == 'payment' %}
