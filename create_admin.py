@@ -4,8 +4,8 @@ from app.models import User
 app = create_app()
 with app.app_context():
     db.create_all()
-    if not User.query.filter_by(username='andrii770').first():
-        user = User(username='andrii770', password_hash='Dnepr 75ok10')
+    if not User.query.filter_by(username='').first():
+        user = User(username='', password_hash='')
         db.session.add(user)
         db.session.commit()
         print('Адміна створено!')
