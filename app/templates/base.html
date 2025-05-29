@@ -15,10 +15,10 @@
       <nav>
         <a href="{{ url_for('main.index') }}">Головна</a>
         <!-- Соцмережі -->
-        <a href="https://facebook.com" target="_blank" title="Facebook"><img src="{{ url_for('static', filename='img/facebook.svg') }}" alt="Facebook" style="height:24px;vertical-align:middle;"></a>
-        <a href="https://instagram.com" target="_blank" title="Instagram"><img src="{{ url_for('static', filename='img/instagram.svg') }}" alt="Instagram" style="height:24px;vertical-align:middle;"></a>
-        <a href="https://t.me/" target="_blank" title="Telegram"><img src="{{ url_for('static', filename='img/telegram.svg') }}" alt="Telegram" style="height:24px;vertical-align:middle;"></a>
-        <a href="mailto:info@example.com" title="Email"><img src="{{ url_for('static', filename='img/email.svg') }}" alt="Email" style="height:24px;vertical-align:middle;"></a>
+        <a href="{{ settings.facebook if settings and settings.facebook else 'https://facebook.com' }}" target="_blank" title="Facebook"><img src="{{ url_for('static', filename='img/facebook.svg') }}" alt="Facebook" style="height:24px;vertical-align:middle;"></a>
+        <a href="{{ settings.instagram if settings and settings.instagram else 'https://instagram.com' }}" target="_blank" title="Instagram"><img src="{{ url_for('static', filename='img/instagram.svg') }}" alt="Instagram" style="height:24px;vertical-align:middle;"></a>
+        <a href="{{ settings.telegram if settings and settings.telegram else 'https://t.me/' }}" target="_blank" title="Telegram"><img src="{{ url_for('static', filename='img/telegram.svg') }}" alt="Telegram" style="height:24px;vertical-align:middle;"></a>
+        <a href="mailto:{{ settings.email if settings and settings.email else 'info@example.com' }}" title="Email"><img src="{{ url_for('static', filename='img/email.svg') }}" alt="Email" style="height:24px;vertical-align:middle;"></a>
         <!-- Перемикач мов -->
         <span style="margin-left:2em;">
           <a href="{{ url_for('main.index', lang='uk') }}" {% if g.get('lang', 'uk') == 'uk' %}style="font-weight:bold;"{% endif %}>Укр</a> |

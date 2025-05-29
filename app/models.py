@@ -49,3 +49,11 @@ class Payment(db.Model):
     proof_image = db.Column(db.String(256))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     method = db.relationship('PaymentMethod')
+
+class Settings(db.Model):
+    """Налаштування сайту"""
+    id = db.Column(db.Integer, primary_key=True)
+    facebook = db.Column(db.String(256))
+    instagram = db.Column(db.String(256))
+    telegram = db.Column(db.String(256))
+    email = db.Column(db.String(256))

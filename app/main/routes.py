@@ -1,7 +1,7 @@
 # app/main/routes.py
 
 from flask import Blueprint, render_template, redirect, url_for, abort
-from app.models import Block, PaymentMethod
+from app.models import Block, PaymentMethod, Settings
 from app import db
 
 main = Blueprint('main', __name__)
@@ -10,7 +10,9 @@ main = Blueprint('main', __name__)
 def index():
     """Головна сторінка з 6 блоками"""
     blocks = Block.query.filter_by(is_active=True).order_by(Block.order).all()
-    return render_template('index.html', blocks=blocks)
+    methods = PaymentMethod.query.filter_by(is_active=True).order_by(PaymentMethod.order).all()
+    settings = Settings.query.first()
+    return render_template('index.html', blocks=blocks, methods=methods, settings=settings)
 
 @main.route('/block/<slug>')
 def block_detail(slug):

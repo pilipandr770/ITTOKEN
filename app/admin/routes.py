@@ -2,8 +2,8 @@
 
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, logout_user, current_user, login_required
-from app.models import db, User, Block, PaymentMethod, Payment
-from app.forms import LoginForm, BlockForm, PaymentMethodForm
+from app.models import db, User, Block, PaymentMethod, Payment, Settings
+from app.forms import LoginForm, BlockForm, PaymentMethodForm, SettingsForm
 
 admin = Blueprint('admin', __name__)
 
@@ -103,3 +103,20 @@ def payments():
     """Історія оплат"""
     payments = Payment.query.order_by(Payment.created_at.desc()).all()
     return render_template('admin/payments.html', payments=payments)
+
+@admin.route('/settings', methods=['GET', 'POST'])
+@admin_required
+def settings():
+    """Налаштування сайту"""
+    settings = Settings.query.first()
+    if not settings:
+        settings = Settings()
+        db.session.add(settings)
+        db.session.commit()
+    form = SettingsForm(obj=settings)
+    if form.validate_on_submit():
+        form.populate_obj(settings)
+        db.session.commit()
+        flash('Налаштування збережено', 'success')
+        return redirect(url_for('admin.settings'))
+    return render_template('admin/settings.html', form=form, settings=settings)

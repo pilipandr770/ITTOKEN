@@ -10,3 +10,4 @@ qrcode
 requests
 openai
 python-dotenv
+email_validator

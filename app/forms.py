@@ -27,3 +27,10 @@ class PaymentMethodForm(FlaskForm):
     description_ru = TextAreaField('Опис (RU)', validators=[Optional()])
     is_active = BooleanField('Активний')
     submit = SubmitField('Зберегти')
+
+class SettingsForm(FlaskForm):
+    facebook = StringField('Facebook', validators=[Optional()])
+    instagram = StringField('Instagram', validators=[Optional()])
+    telegram = StringField('Telegram', validators=[Optional()])
+    email = StringField('Email', validators=[Optional(), Email()])
+    submit = SubmitField('Зберегти')
