@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Блоки{% endblock %}
+
+{% block content %}
+<div class="page-container">
+  <h1>Редагування блоків</h1>
+  {% if blocks %}
+    <ul>
+      {% for block in blocks %}
+        <li>
+          <b>{{ block.title }}</b> 
+          <a href="{{ url_for('admin.edit_block', block_id=block.id) }}">[Редагувати]</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% if form %}
+    <form method="POST" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <div>{{ form.title.label }} {{ form.title() }}</div>
+      <div>{{ form.content.label }} {{ form.content() }}</div>
+      <div>{{ form.image.label }} {{ form.image() }}</div>
+      <div>{{ form.is_active.label }} {{ form.is_active() }}</div>
+      <div>{{ form.is_top.label }} {{ form.is_top() }}</div>
+      <button type="submit" class="btn btn-success">Зберегти</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}

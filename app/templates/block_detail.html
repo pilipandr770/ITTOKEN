@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ block.title }}{% endblock %}
+
+{% block content %}
+  <div class="block-detail">
+    <h1>{{ block.title }}</h1>
+    {% if block.image %}
+      <img src="{{ url_for('static', filename='uploads/' ~ block.image) }}" alt="{{ block.title }}">
+    {% endif %}
+    <div>{{ block.content|safe }}</div>
+    {% if block.slug == 'payment' %}
+      <a href="{{ url_for('main.payment') }}" class="btn btn-success">Перейти до оплати</a>
+    {% endif %}
+  </div>
+{% endblock %}

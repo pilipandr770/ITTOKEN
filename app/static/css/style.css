@@ -1,0 +1,201 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f7fafd;
+    color: #222;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 100px;
+}
+
+header {
+    background: #fff;
+    box-shadow: 0 2px 8px #eee;
+    padding: 1em 0.5em;
+    margin-bottom: 2em;
+}
+
+nav a {
+    color: #007bff;
+    text-decoration: none;
+    margin: 0 0.7em;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+nav a:hover {
+    color: #0056b3;
+}
+
+.blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5em;
+    justify-content: center;
+    margin-bottom: 2em;
+}
+
+.block-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.2em 1em;
+    width: 260px;
+    background: #fff;
+    box-shadow: 0 2px 12px #e0e0e0;
+    text-align: center;
+    transition: box-shadow 0.2s, transform 0.2s;
+    margin-bottom: 1em;
+}
+.block-card:hover {
+    box-shadow: 0 4px 24px #b3d8ff;
+    transform: translateY(-4px) scale(1.03);
+}
+.block-card img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 0.7em;
+}
+.block-card-top {
+    width: 100% !important;
+    max-width: 900px;
+    background: linear-gradient(90deg, #eaf6ff 60%, #fff 100%);
+    box-shadow: 0 4px 24px #b3d8ff;
+    border: 2px solid #b3d8ff;
+    margin-bottom: 2em;
+}
+
+.payment-methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5em;
+    justify-content: center;
+    margin: 2em 0;
+}
+.payment-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px #e0e0e0;
+    padding: 1.2em 1em;
+    width: 260px;
+    text-align: center;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.payment-card:hover {
+    box-shadow: 0 4px 24px #b3d8ff;
+    transform: translateY(-4px) scale(1.03);
+}
+.payment-card img {
+    margin-bottom: 0.7em;
+    border-radius: 8px;
+}
+.btn, .btn-primary {
+    display: inline-block;
+    background: #007bff;
+    color: #fff !important;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5em 1.2em;
+    margin-top: 0.7em;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.btn:hover, .btn-primary:hover {
+    background: #0056b3;
+}
+
+footer#site-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    background: #f5f5f5;
+    padding: 1em;
+    text-align: center;
+    z-index: 900;
+    box-shadow: 0 -2px 8px #eee;
+    font-size: 1em;
+}
+footer#site-footer a {
+    color: #007bff;
+    text-decoration: none;
+    margin: 0 0.5em;
+}
+footer#site-footer a:hover {
+    text-decoration: underline;
+}
+
+.flashes {
+    list-style: none;
+    padding: 0;
+    margin: 1em 0;
+}
+.flash-danger {
+    color: #fff;
+    background: #dc3545;
+    padding: 0.5em 1em;
+    border-radius: 6px;
+    margin-bottom: 0.5em;
+}
+.flash-success {
+    color: #fff;
+    background: #28a745;
+    padding: 0.5em 1em;
+    border-radius: 6px;
+    margin-bottom: 0.5em;
+}
+
+.page-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #fafdff;
+    border-radius: 18px;
+    box-shadow: 0 2px 24px #e0e0e0;
+    padding: 2.5em 1.5em 2em 1.5em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.block-detail {
+    background: #fafdff;
+    border-radius: 14px;
+    box-shadow: 0 2px 16px #e0e0e0;
+    padding: 2em 1.5em;
+    margin: 2em auto;
+    max-width: 900px;
+}
+
+@media (max-width: 900px) {
+    .block-card-top, .blocks, .payment-methods {
+        max-width: 100% !important;
+        flex-direction: column;
+        align-items: center;
+    }
+    .block-card, .payment-card {
+        width: 95vw;
+        max-width: 350px;
+    }
+    .page-container, .block-detail {
+        padding: 1em 0.5em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+}
+
+@media (max-width: 600px) {
+    header nav {
+        flex-direction: column;
+        gap: 0.5em;
+    }
+    .block-card-top {
+        padding: 1em 0.2em;
+    }
+    .block-card, .payment-card {
+        padding: 0.7em 0.2em;
+    }
+    body {
+        padding-bottom: 140px;
+    }
+}

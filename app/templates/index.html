@@ -1,0 +1,71 @@
+<!-- app/templates/index.html -->
+{% extends 'base.html' %}
+{% block title %}Головна{% endblock %}
+
+{% block content %}
+  
+  {% set top_block = blocks|selectattr('is_top')|first %}
+  {% set other_blocks = blocks|rejectattr('is_top')|list %}
+  {% if top_block %}
+    <div class="block-card block-card-top" style="width:100%;max-width:900px;margin:0 auto 2em auto;padding:2em 1em;background:#eaf6ff;">
+      <a href="{{ url_for('main.block_detail', slug=top_block.slug) }}">
+        {% if top_block.image %}
+          <img src="{{ url_for('static', filename='uploads/' ~ top_block.image) }}" alt="{{ top_block.title }}" style="max-width:300px;float:left;margin-right:2em;">
+        {% endif %}
+        <h2>{{ top_block.title }}</h2>
+        <p>{{ top_block.content[:300] }}...</p>
+      </a>
+      <div style="clear:both;"></div>
+    </div>
+  {% endif %}
+  <div class="blocks" style="flex-wrap:wrap;max-width:900px;margin:0 auto;">
+    {% for block in other_blocks[:3] %}
+      <div class="block-card">  
+        <a href="{{ url_for('main.block_detail', slug=block.slug) }}">
+          {% if block.image %}
+            <img src="{{ url_for('static', filename='uploads/' ~ block.image) }}" alt="{{ block.title }}">
+          {% endif %}
+          <h3>{{ block.title }}</h3>
+          <p>{{ block.content[:100] }}...</p>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="blocks" style="flex-wrap:wrap;max-width:900px;margin:0 auto;">
+    {% for block in other_blocks[3:6] %}
+      <div class="block-card">
+        <a href="{{ url_for('main.block_detail', slug=block.slug) }}">
+          {% if block.image %}
+            <img src="{{ url_for('static', filename='uploads/' ~ block.image) }}" alt="{{ block.title }}">
+          {% endif %}
+          <h3>{{ block.title }}</h3>
+          <p>{{ block.content[:100] }}...</p>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+  
+  <div class="payment-methods">
+    {% for method in methods %}
+      <div class="payment-card">
+        <h3>{{ method.name }}</h3>
+        {% if method.qr_code %}
+          <img src="{{ url_for('static', filename='uploads/' ~ method.qr_code) }}" alt="QR code" style="max-width:150px;">
+        {% endif %}
+        <div>
+          {% if method.description_ua %}{{ method.description_ua|safe }}{% endif %}
+        </div>
+        {% if method.type == 'stripe' and method.details.url %}
+          <a href="{{ method.details.url }}" class="btn btn-primary" target="_blank">Оплатити через Stripe</a>
+        {% elif method.type == 'paypal' and method.details.url %}
+          <a href="{{ method.details.url }}" class="btn btn-primary" target="_blank">Оплатити через PayPal</a>
+        {% elif method.type == 'bank' %}
+          <p>Реквізити: {{ method.details.iban or '' }}</p>
+        {% endif %}
+        {% if method.invoice_pdf %}
+          <a href="{{ url_for('static', filename='uploads/' ~ method.invoice_pdf) }}" download>Завантажити рахунок PDF</a>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

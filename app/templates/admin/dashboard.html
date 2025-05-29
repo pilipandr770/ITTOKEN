@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Адмінка{% endblock %}
+
+{% block content %}
+<div class="page-container">
+  <h1>Адмін-панель</h1>
+  <ul>
+    <li><a href="{{ url_for('admin.blocks') }}">Блоки сайту</a></li>
+    <li><a href="{{ url_for('admin.payment_methods') }}">Способи оплати</a></li>
+    <li><a href="{{ url_for('admin.payments') }}">Історія оплат</a></li>
+    <li><a href="{{ url_for('admin.logout') }}">Вийти</a></li>
+  </ul>
+  <h2>Останні оплати</h2>
+  <ul>
+    {% for payment in payments %}
+      <li>{{ payment.created_at }}: {{ payment.amount }} ({{ payment.status }})</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
