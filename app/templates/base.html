@@ -8,9 +8,161 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/ocean_bg.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block head %}{% endblock %}
+    <style>
+    /* === ЧАТ ВІДЖЕТ СТИЛІ === */
+    .chat-circle-btn {
+        position: fixed;
+        right: 30px;
+        bottom: 90px;
+        width: 60px;
+        height: 60px;
+        background: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        font-size: 2em;
+        box-shadow: 0 2px 10px #b3d8ff88;
+        cursor: pointer;
+        z-index: 1100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+    }
+    .chat-circle-btn img {
+        width: 36px;
+        height: 36px;
+        pointer-events: none;
+    }
+    .chat-circle-btn:hover { background: #0056b3; }
+    .chat-window {
+        position: fixed;
+        right: 30px;
+        bottom: 90px;
+        width: 340px;
+        height: 420px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 6px 32px #b3d8ff77;
+        display: flex;
+        flex-direction: column;
+        z-index: 1200;
+        overflow: hidden;
+        border: 1px solid #eaf2fb;
+        animation: fadeInChat .3s;
+        transition: width 0.3s, height 0.3s, right 0.3s, bottom 0.3s;
+        display: none;
+    }
+    @keyframes fadeInChat {
+        from { opacity: 0; transform: scale(0.98);}
+        to   { opacity: 1; transform: scale(1);}
+    }
+    .chat-header {
+        padding: 0.8em 1em;
+        background: #f7fafd;
+        font-weight: 600;
+        font-size: 1.1em;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .chat-actions button {
+        background: none;
+        border: none;
+        font-size: 1.2em;
+        margin-left: 8px;
+        color: #888;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .chat-actions button:hover { color: #007bff; }
+    .chat-messages {
+        flex: 1 1 auto;
+        padding: 1em 0.8em;
+        overflow-y: auto;
+        background: #fafdff;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6em;
+        scroll-behavior: smooth;
+    }
+    .chat-messages .user {
+        align-self: flex-end;
+        background: #007bff;
+        color: #fff;
+        padding: 0.6em 1em;
+        border-radius: 16px 16px 4px 16px;
+        max-width: 70%;
+        word-break: break-word;
+        font-size: 1em;
+        font-family: 'Montserrat', Arial, sans-serif;
+        box-shadow: 0 1px 8px #c3e1ff44;
+        margin-left: 20%;
+        text-align: right;
+    }
+    .chat-messages .bot {
+        align-self: flex-start;
+        background: #f0f4f8;
+        color: #23292f;
+        padding: 0.6em 1em;
+        border-radius: 16px 16px 16px 4px;
+        max-width: 75%;
+        word-break: break-word;
+        font-size: 1em;
+        font-family: 'Montserrat', Arial, sans-serif;
+        box-shadow: 0 1px 8px #e0e0e066;
+        margin-right: 20%;
+        text-align: left;
+    }
+    .chat-footer {
+        display: flex;
+        align-items: center;
+        gap: 0.6em;
+        border-top: 1px solid #e0e0e0;
+        padding: 0.8em 0.8em;
+        background: #fff;
+    }
+    #chat-input {
+        flex: 1 1 auto;
+        border: 1px solid #b3d8ff;
+        border-radius: 8px;
+        padding: 0.55em 0.9em;
+        font-size: 1em;
+        font-family: 'Montserrat', Arial, sans-serif;
+        outline: none;
+        transition: border 0.2s;
+    }
+    #chat-input:focus { border-color: #007bff; }
+    #chat-send {
+        background: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 0.52em 1em;
+        font-size: 1.1em;
+        cursor: pointer;
+        font-family: 'Montserrat', Arial, sans-serif;
+        transition: background 0.2s;
+    }
+    #chat-send:hover { background: #0056b3; }
+    @media (max-width: 600px) {
+        .chat-window {
+            right: 2vw !important;
+            bottom: 2vh !important;
+            width: 98vw !important;
+            height: 92vh !important;
+            border-radius: 12px;
+        }
+        .chat-circle-btn {
+            right: 2vw;
+            bottom: 2vh;
+        }
+    }
+    </style>
   </head>
   <body>
-    {% include '_ocean_bg_video.html' %}
+    
     <header>
       <nav>
         <a href="{{ url_for('main.index') }}">Головна</a>
@@ -48,22 +200,27 @@
       <a href="/impressum">Імпресум</a> |
       <a href="/contacts">Контакти</a>
     </footer>
-    <!-- Віджет чату OpenAI Assist -->
-    <div id="chat-open-btn" style="position:fixed;bottom:30px;right:30px;z-index:1000;cursor:pointer;">
-      <img src="/static/img/chat_icon.svg" width="56" height="56"/>
-    </div>
-    <div id="chat-window" style="display:none;position:fixed;bottom:90px;right:30px;width:340px;height:420px;background:#fff;border-radius:16px;box-shadow:0 2px 24px #0003;z-index:1001;padding:16px;transition:width 0.3s,height 0.3s;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-weight:bold;font-size:1.1em;">AI-чат</span>
-        <div>
-          <button id="chat-minimize" title="Згорнути" style="background:none;border:none;font-size:1.3em;cursor:pointer;">🗕</button>
-          <button id="chat-expand" title="Розгорнути" style="background:none;border:none;font-size:1.3em;cursor:pointer;">🗖</button>
+
+    <!-- ===== ВІДЖЕТ ЧАТУ ===== -->
+    <button id="chat-open-btn" class="chat-circle-btn" title="Чат із асистентом">
+      <img src="/static/img/chat_icon.svg" alt="Чат" />
+    </button>
+    <div id="chat-window" class="chat-window">
+      <div class="chat-header">
+        <span>Чат з асистентом</span>
+        <div class="chat-actions">
+          <button id="chat-expand" title="Розгорнути">⤢</button>
+          <button id="chat-minimize" title="Згорнути">✕</button>
         </div>
       </div>
-      <div id="chat-messages" style="height:320px;overflow-y:auto;background:#f9f9ff;border-radius:8px;padding:8px;margin-bottom:8px;"></div>
-      <input id="chat-input" style="width:75%;padding:8px;border-radius:8px;border:1px solid #ddd;" placeholder="Напишіть..." autocomplete="off"/>
-      <button id="chat-send" style="padding:8px 14px;border-radius:8px;background:#097fff;color:#fff;border:none;cursor:pointer;">▶️</button>
+      <div id="chat-messages" class="chat-messages"></div>
+      <div class="chat-footer">
+        <input id="chat-input" type="text" placeholder="Напишіть повідомлення..." autocomplete="off" />
+        <button id="chat-send">▶</button>
+      </div>
     </div>
+    <!-- ===== /ВІДЖЕТ ЧАТУ ===== -->
+
     <script src="{{ url_for('static', filename='assist.js') }}"></script>
     {% block scripts %}{% endblock %}
   </body>

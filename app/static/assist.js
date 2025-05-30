@@ -5,18 +5,30 @@ document.addEventListener("DOMContentLoaded", function() {
     const chatSend = document.getElementById("chat-send");
     const chatMin = document.getElementById("chat-minimize");
     const chatExpand = document.getElementById("chat-expand");
+    const chatMessages = document.getElementById("chat-messages");
     let expanded = false;
 
+    // Відкрити чат
     btn.onclick = () => {
-        chatWindow.style.display = "block";
+        chatWindow.style.display = "flex";
         chatWindow.style.width = "340px";
         chatWindow.style.height = "420px";
+        chatWindow.style.right = "30px";
+        chatWindow.style.bottom = "90px";
         expanded = false;
+        setTimeout(() => chatInput.focus(), 100);
     };
+    // Надіслати повідомлення кнопкою
     chatSend.onclick = sendMessage;
+    // Надіслати Enter'ом
+    chatInput.onkeydown = function(e) {
+        if (e.key === "Enter") sendMessage();
+    };
+    // Згорнути чат
     chatMin.onclick = () => {
         chatWindow.style.display = "none";
     };
+    // Розгорнути/зменшити чат
     chatExpand.onclick = () => {
         if (!expanded) {
             chatWindow.style.width = "95vw";
@@ -33,11 +45,13 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     };
 
+    // Надсилання повідомлення
     function sendMessage() {
-        const message = chatInput.value;
+        const message = chatInput.value.trim();
         if (!message) return;
         appendMessage("user", message);
         chatInput.value = "";
+        chatInput.focus();
 
         fetch('/assist/chat', {
             method: 'POST',
@@ -46,15 +60,15 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(resp => resp.json())
         .then(data => appendMessage("bot", data.reply))
-        .catch(() => appendMessage("bot", "Помилка"));
+        .catch(() => appendMessage("bot", "Помилка звʼязку з сервером 😥"));
     }
 
+    // Вивід повідомлення в чат
     function appendMessage(who, text) {
-        const box = document.getElementById("chat-messages");
         const div = document.createElement("div");
         div.className = who;
         div.textContent = text;
-        box.appendChild(div);
-        box.scrollTop = box.scrollHeight;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 });
