@@ -30,12 +30,13 @@ header, footer#site-footer {
     box-shadow: 0 8px 48px #0002;
     z-index: 1000;
 }
-header { position: fixed; top: 0; left: 0; right: 0; width: 100%; padding: 1.2em 0; }
+header { 
+    position: fixed; top: 0; left: 0; right: 0; width: 100%; padding: 1.2em 0; 
+}
 footer#site-footer { 
-    position: fixed; 
-    left: 0; right: 0; bottom: 0; width: 100%; 
+    position: fixed; left: 0; right: 0; bottom: 0; width: 100%; 
     padding: 1.2em 0.5em; text-align: center;
-    background: var(--page-bg) !important;
+    background: #f7f5ed !important;
     color: #232323 !important;
     box-shadow: 0 -4px 32px #efe1caaa;
 }
@@ -156,7 +157,7 @@ footer#site-footer {
 .btn, .btn-primary {
     display: inline-block;
     background: var(--page-accent);
-    color: #fff !important;
+    color: #f2eeee !important;
     border: none;
     border-radius: 12px;
     padding: 0.75em 2em;
