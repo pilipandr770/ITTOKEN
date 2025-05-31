@@ -15,22 +15,23 @@
     </ul>
   {% endif %}
   {% if form %}
-    <div style="max-width:500px;margin:2em auto 0 auto;background:#fff;border-radius:12px;box-shadow:0 2px 16px #e0e0e0;padding:2em 1.5em;">
+    <div style="max-width:900px;margin:2em auto 0 auto;background:#fff;border-radius:12px;box-shadow:0 2px 16px #e0e0e0;padding:2em 1.5em;">
       <h2 style="text-align:center;margin-bottom:1em;">Форма блоку</h2>
       <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
-        <div style="margin-bottom:1em;">{{ form.title.label }}<br>{{ form.title(class_='form-control', style='width:100%;') }}</div>
-        <div style="margin-bottom:1em;">{{ form.title_en.label }}<br>{{ form.title_en(class_='form-control', style='width:100%;') }}</div>
-        <div style="margin-bottom:1em;">{{ form.title_de.label }}<br>{{ form.title_de(class_='form-control', style='width:100%;') }}</div>
-        <div style="margin-bottom:1em;">{{ form.title_ru.label }}<br>{{ form.title_ru(class_='form-control', style='width:100%;') }}</div>
-        <div style="margin-bottom:1em;">{{ form.content.label }}<br>{{ form.content(class_='form-control', style='width:100%;min-height:120px;') }}</div>
-        <div style="margin-bottom:1em;">{{ form.content_en.label }}<br>{{ form.content_en(class_='form-control', style='width:100%;min-height:120px;') }}</div>
-        <div style="margin-bottom:1em;">{{ form.content_de.label }}<br>{{ form.content_de(class_='form-control', style='width:100%;min-height:120px;') }}</div>
-        <div style="margin-bottom:1em;">{{ form.content_ru.label }}<br>{{ form.content_ru(class_='form-control', style='width:100%;min-height:120px;') }}</div>
-        <div style="margin-bottom:1em;">{{ form.image.label }}<br>{{ form.image(class_='form-control') }}</div>
+        <div style="margin-bottom:1em;">{{ form.title.label }}<br>{{ form.title(class_='form-control', style='width:100%;padding:10px;font-size:16px;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.title_en.label }}<br>{{ form.title_en(class_='form-control', style='width:100%;padding:10px;font-size:16px;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.title_de.label }}<br>{{ form.title_de(class_='form-control', style='width:100%;padding:10px;font-size:16px;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.title_ru.label }}<br>{{ form.title_ru(class_='form-control', style='width:100%;padding:10px;font-size:16px;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.content.label }}<br>{{ form.content(class_='form-control', style='width:100%;min-height:300px;padding:10px;font-size:16px;resize:vertical;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.content_en.label }}<br>{{ form.content_en(class_='form-control', style='width:100%;min-height:300px;padding:10px;font-size:16px;resize:vertical;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.content_de.label }}<br>{{ form.content_de(class_='form-control', style='width:100%;min-height:300px;padding:10px;font-size:16px;resize:vertical;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.content_ru.label }}<br>{{ form.content_ru(class_='form-control', style='width:100%;min-height:300px;padding:10px;font-size:16px;resize:vertical;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.image.label }}<br>{{ form.image(class_='form-control', style='padding:10px;') }}</div>
+        <div style="margin-bottom:1em;">{{ form.slug.label }}<br>{{ form.slug(class_='form-control', style='width:100%;padding:10px;font-size:16px;') }}</div>
         <div style="margin-bottom:1em;">{{ form.is_active() }} {{ form.is_active.label }}</div>
         <div style="margin-bottom:1em;">{{ form.is_top() }} {{ form.is_top.label }}</div>
-        <button type="submit" class="btn btn-success" style="width:100%;font-size:1.1em;">Зберегти</button>
+        <button type="submit" class="btn btn-success" style="width:100%;font-size:1.1em;padding:12px;">Зберегти</button>
       </form>
     </div>
   {% endif %}
