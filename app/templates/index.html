@@ -1,18 +1,22 @@
-<!-- app/templates/index.html -->
 {% extends 'base.html' %}
 {% block title %}{{ _('Головна') }}{% endblock %}
 
 {% block content %}
-  
-  {% set top_block = blocks|selectattr('is_top')|first %}
-  {% set other_blocks = blocks|rejectattr('is_top')|list %}
-  {% if top_block %}
-    <div class="block-card block-card-top" style="width:100%;max-width:900px;margin:0 auto 2em auto;padding:2em 1em;background:#eaf6ff;">
-      <a href="{{ url_for('main.block_detail', slug=top_block.slug) }}">
+
+  <div class="blocks">
+    {# --- Головний блок --- #}
+    {% set top_block = blocks|selectattr('is_top')|first %}
+    {% if top_block %}
+      <div class="block-card"
+        onclick="openBlockDetail(
+          '{{ url_for('static', filename='uploads/' ~ top_block.image) if top_block.image else '' }}',
+          `{{ top_block.title_ua or top_block.title }}`,
+          `{{ top_block.content_ua[:300] if top_block.content_ua else top_block.content[:300] }}...`
+        )">
         {% if top_block.image %}
-          <img src="{{ url_for('static', filename='uploads/' ~ top_block.image) }}" alt="{{ top_block.title }}" style="max-width:300px;float:left;margin-right:2em;">
+          <img src="{{ url_for('static', filename='uploads/' ~ top_block.image) }}" alt="{{ top_block.title }}">
         {% endif %}
-        <h2>
+        <h3>
           {% if g.get('lang') == 'en' and top_block.title_en %}
             {{ top_block.title_en }}
           {% elif g.get('lang') == 'ru' and top_block.title_ru %}
@@ -20,7 +24,7 @@
           {% else %}
             {{ top_block.title_ua or top_block.title }}
           {% endif %}
-        </h2>
+        </h3>
         <p>
           {% if g.get('lang') == 'en' and top_block.content_en %}
             {{ top_block.content_en[:300] }}...
@@ -30,112 +34,121 @@
             {{ top_block.content_ua[:300] if top_block.content_ua else top_block.content[:300] }}...
           {% endif %}
         </p>
-      </a>
-      <div style="clear:both;"></div>
-    </div>
-  {% endif %}
-  <div class="blocks" style="flex-wrap:wrap;max-width:900px;margin:0 auto;">
-    {% for block in other_blocks[:3] %}
-      <div class="block-card">  
-        <a href="{{ url_for('main.block_detail', slug=block.slug) }}">
-          {% if block.image %}
-            <img src="{{ url_for('static', filename='uploads/' ~ block.image) }}" alt="{{ block.title }}">
+      </div>
+    {% endif %}
+
+    {# --- ВСІ інші блоки --- #}
+    {% set other_blocks = blocks|rejectattr('is_top')|list %}
+    {% for block in other_blocks %}
+      <div class="block-card"
+        onclick="openBlockDetail(
+          '{{ url_for('static', filename='uploads/' ~ block.image) if block.image else '' }}',
+          `{{ block.title_ua or block.title }}`,
+          `{{ block.content_ua[:200] if block.content_ua else block.content[:200] }}...`
+        )">
+        {% if block.image %}
+          <img src="{{ url_for('static', filename='uploads/' ~ block.image) }}" alt="{{ block.title }}">
+        {% endif %}
+        <h3>
+          {% if g.get('lang') == 'en' and block.title_en %}
+            {{ block.title_en }}
+          {% elif g.get('lang') == 'ru' and block.title_ru %}
+            {{ block.title_ru }}
+          {% else %}
+            {{ block.title_ua or block.title }}
           {% endif %}
-          <h3>
-            {% if g.get('lang') == 'en' and block.title_en %}
-              {{ block.title_en }}
-            {% elif g.get('lang') == 'ru' and block.title_ru %}
-              {{ block.title_ru }}
-            {% else %}
-              {{ block.title_ua or block.title }}
-            {% endif %}
-          </h3>
-          <p>
-            {% if g.get('lang') == 'en' and block.content_en %}
-              {{ block.content_en[:100] }}...
-            {% elif g.get('lang') == 'ru' and block.content_ru %}
-              {{ block.content_ru[:100] }}...
-            {% else %}
-              {{ block.content_ua[:100] if block.content_ua else block.content[:100] }}...
-            {% endif %}
-          </p>
-        </a>
+        </h3>
+        <p>
+          {% if g.get('lang') == 'en' and block.content_en %}
+            {{ block.content_en[:100] }}...
+          {% elif g.get('lang') == 'ru' and block.content_ru %}
+            {{ block.content_ru[:100] }}...
+          {% else %}
+            {{ block.content_ua[:100] if block.content_ua else block.content[:100] }}...
+          {% endif %}
+        </p>
       </div>
     {% endfor %}
-  </div>
-  <div class="blocks" style="flex-wrap:wrap;max-width:900px;margin:0 auto;">
-    {% for block in other_blocks[3:6] %}
-      <div class="block-card">
-        <a href="{{ url_for('main.block_detail', slug=block.slug) }}">
-          {% if block.image %}
-            <img src="{{ url_for('static', filename='uploads/' ~ block.image) }}" alt="{{ block.title }}">
-          {% endif %}
-          <h3>
-            {% if g.get('lang') == 'en' and block.title_en %}
-              {{ block.title_en }}
-            {% elif g.get('lang') == 'ru' and block.title_ru %}
-              {{ block.title_ru }}
-            {% else %}
-              {{ block.title_ua or block.title }}
-            {% endif %}
-          </h3>
-          <p>
-            {% if g.get('lang') == 'en' and block.content_en %}
-              {{ block.content_en[:100] }}...
-            {% elif g.get('lang') == 'ru' and block.content_ru %}
-              {{ block.content_ru[:100] }}...
-            {% else %}
-              {{ block.content_ua[:100] if block.content_ua else block.content[:100] }}...
-            {% endif %}
-          </p>
-        </a>
-      </div>
-    {% endfor %}
-  </div>
-  
-  <div class="block-card block-card-top" style="width:100%;max-width:900px;margin:2em auto 2em auto;padding:2em 1em;background:#f3faff;box-shadow:0 4px 24px #b3d8ff;border:2px solid #b3d8ff;">
-    <div style="display:flex;align-items:center;gap:1.5em;">
+
+    {# --- БЛОК ОПЛАТИ --- #}
+    <div class="block-card"
+      onclick="openBlockDetail(
+        '',
+        '{{ _('Оплата онлайн') }}',
+        '{{ _('Виберіть зручний спосіб оплати для вашого замовлення. Ми підтримуємо Stripe, PayPal, банківські перекази та інші сучасні методи.') }}'
+      )">
       <div>
-        <h2 style="margin:0 0 0.5em 0;">{{ _('Оплата онлайн') }}</h2>
-        <p style="margin:0 0 1.2em 0;">{{ _('Виберіть зручний спосіб оплати для вашого замовлення. Ми підтримуємо Stripe, PayPal, банківські перекази та інші сучасні методи.') }}</p>
+        <h3 style="margin:0 0 0.5em 0;">{{ _('Оплата онлайн') }}</h3>
+        <p style="margin:0 0 1.2em 0;">
+          {{ _('Виберіть зручний спосіб оплати для вашого замовлення. Ми підтримуємо Stripe, PayPal, банківські перекази та інші сучасні методи.') }}
+        </p>
       </div>
-    </div>
-    <div class="payment-methods" style="margin-top:1.5em;">
-      {% for method in methods %}
-        <div class="payment-card">
-          <h3>
-            {% if g.get('lang') == 'en' and method.name_en %}
-              {{ method.name_en }}
-            {% elif g.get('lang') == 'ru' and method.name_ru %}
-              {{ method.name_ru }}
-            {% else %}
-              {{ method.name_ua or method.name }}
+      <div class="payment-methods">
+        {% for method in methods %}
+          <div class="payment-card">
+            <h3>
+              {% if g.get('lang') == 'en' and method.name_en %}
+                {{ method.name_en }}
+              {% elif g.get('lang') == 'ru' and method.name_ru %}
+                {{ method.name_ru }}
+              {% else %}
+                {{ method.name_ua or method.name }}
+              {% endif %}
+            </h3>
+            {% if method.qr_code %}
+              <img src="{{ url_for('static', filename='uploads/' ~ method.qr_code) }}" alt="QR code" style="max-width:150px;">
             {% endif %}
-          </h3>
-          {% if method.qr_code %}
-            <img src="{{ url_for('static', filename='uploads/' ~ method.qr_code) }}" alt="QR code" style="max-width:150px;">
-          {% endif %}
-          <div>
-            {% if g.get('lang') == 'en' and method.description_en %}
-              {{ method.description_en|safe }}
-            {% elif g.get('lang') == 'ru' and method.description_ru %}
-              {{ method.description_ru|safe }}
-            {% else %}
-              {{ method.description_ua|safe }}
+            <div>
+              {% if g.get('lang') == 'en' and method.description_en %}
+                {{ method.description_en|safe }}
+              {% elif g.get('lang') == 'ru' and method.description_ru %}
+                {{ method.description_ru|safe }}
+              {% else %}
+                {{ method.description_ua|safe }}
+              {% endif %}
+            </div>
+            {% if method.type == 'stripe' and method.details.url %}
+              <a href="{{ method.details.url }}" class="btn btn-primary" target="_blank">{{ _('Оплатити через Stripe') }}</a>
+            {% elif method.type == 'paypal' and method.details.url %}
+              <a href="{{ method.details.url }}" class="btn btn-primary" target="_blank">{{ _('Оплатити через PayPal') }}</a>
+            {% elif method.type == 'bank' %}
+              <p>{{ _('Реквізити') }}: {{ method.details.iban or '' }}</p>
+            {% endif %}
+            {% if method.invoice_pdf %}
+              <a href="{{ url_for('static', filename='uploads/' ~ method.invoice_pdf) }}" download>{{ _('Завантажити рахунок PDF') }}</a>
             {% endif %}
           </div>
-          {% if method.type == 'stripe' and method.details.url %}
-            <a href="{{ method.details.url }}" class="btn btn-primary" target="_blank">{{ _('Оплатити через Stripe') }}</a>
-          {% elif method.type == 'paypal' and method.details.url %}
-            <a href="{{ method.details.url }}" class="btn btn-primary" target="_blank">{{ _('Оплатити через PayPal') }}</a>
-          {% elif method.type == 'bank' %}
-            <p>{{ _('Реквізити') }}: {{ method.details.iban or '' }}</p>
-          {% endif %}
-          {% if method.invoice_pdf %}
-            <a href="{{ url_for('static', filename='uploads/' ~ method.invoice_pdf) }}" download>{{ _('Завантажити рахунок PDF') }}</a>
-          {% endif %}
-        </div>
-      {% endfor %}
+        {% endfor %}
+      </div>
     </div>
   </div>
+
+  {# ---- POPUP ---- #}
+  <div id="block-detail-popup">
+    <div class="popup-card">
+      <button class="popup-close" onclick="closeBlockDetail()">&times;</button>
+      <img id="block-detail-img" src="" alt="Фото" style="display:none;">
+      <h2 id="block-detail-title"></h2>
+      <div class="desc" id="block-detail-desc"></div>
+    </div>
+  </div>
+  <script>
+  function openBlockDetail(img, title, desc) {
+      if(img){
+        document.getElementById('block-detail-img').src = img;
+        document.getElementById('block-detail-img').style.display = 'block';
+      } else {
+        document.getElementById('block-detail-img').style.display = 'none';
+      }
+      document.getElementById('block-detail-title').innerText = title;
+      document.getElementById('block-detail-desc').innerText = desc;
+      document.getElementById('block-detail-popup').style.display = 'flex';
+  }
+  function closeBlockDetail() {
+      document.getElementById('block-detail-popup').style.display = 'none';
+  }
+  window.addEventListener('keydown', function(e) {
+      if (e.key === "Escape") closeBlockDetail();
+  });
+  </script>
 {% endblock %}

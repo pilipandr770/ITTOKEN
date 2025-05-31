@@ -146,6 +146,60 @@
         transition: background 0.2s;
     }
     #chat-send:hover { background: #0056b3; }
+    
+    /* === НАВІГАЦІЯ З ТРЬОМА СЕКЦІЯМИ === */
+    header nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2em;
+    }
+
+    .nav-left {
+        flex: 1;
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .nav-center {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5em;
+    }
+
+    .nav-right {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    /* Стилі для посилань навігації */
+    nav a {
+        color: #232323;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+
+    nav a:hover {
+        color: #666;
+    }
+
+    /* Стилі для соцмереж */
+    .nav-center a img {
+        height: 24px;
+        width: 24px;
+        transition: transform 0.2s;
+    }
+
+    .nav-center a:hover img {
+        transform: scale(1.1);
+    }
+    
     @media (max-width: 600px) {
         .chat-window {
             right: 2vw !important;
@@ -159,35 +213,78 @@
             bottom: 2vh;
         }
     }
+    
+    /* Медіа-запити для адаптивного дизайну навігації */
+    @media (max-width: 768px) {
+        header nav {
+            flex-direction: column;
+            gap: 1em;
+            padding: 0 1em;
+        }
+        
+        .nav-left, .nav-center, .nav-right {
+            flex: none;
+            justify-content: center;
+        }
+        
+        .nav-center {
+            gap: 2em;
+        }
+        
+        .nav-center a img {
+            height: 28px;
+            width: 28px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .nav-center {
+            gap: 1.5em;
+        }
+        
+        .nav-center a img {
+            height: 24px;
+            width: 24px;
+        }
+    }
     </style>
   </head>
   <body>
     
     <header>
       <nav>
-        <a href="{{ url_for('main.index') }}">Головна</a>
-        <!-- Соцмережі -->
-        <a href="{{ settings.facebook if settings and settings.facebook else 'https://facebook.com' }}" target="_blank" title="Facebook"><img src="{{ url_for('static', filename='img/facebook.svg') }}" alt="Facebook" style="height:24px;vertical-align:middle;"></a>
-        <a href="{{ settings.instagram if settings and settings.instagram else 'https://instagram.com' }}" target="_blank" title="Instagram"><img src="{{ url_for('static', filename='img/instagram.svg') }}" alt="Instagram" style="height:24px;vertical-align:middle;"></a>
-        <a href="{{ settings.telegram if settings and settings.telegram else 'https://t.me/' }}" target="_blank" title="Telegram"><img src="{{ url_for('static', filename='img/telegram.svg') }}" alt="Telegram" style="height:24px;vertical-align:middle;"></a>
-        <a href="mailto:{{ settings.email if settings and settings.email else 'info@example.com' }}" title="Email"><img src="{{ url_for('static', filename='img/email.svg') }}" alt="Email" style="height:24px;vertical-align:middle;"></a>
-        <!-- Перемикач мов -->
-        <form id="lang-switcher-form" method="get" style="display:inline;margin-left:2em;">
-          <select name="lang" id="lang-switcher" style="padding:4px 10px;border-radius:6px;border:1px solid #ddd;font-size:1em;">
-            <option value="uk" {% if g.get('lang', 'uk') == 'uk' %}selected{% endif %}>UA</option>
-            <option value="en" {% if g.get('lang') == 'en' %}selected{% endif %}>EN</option>
-            <option value="de" {% if g.get('lang') == 'de' %}selected{% endif %}>DE</option>
-            <option value="ru" {% if g.get('lang') == 'ru' %}selected{% endif %}>RU</option>
-          </select>
-        </form>
-        <script>
-          document.addEventListener('DOMContentLoaded', function() {
-            var langSel = document.getElementById('lang-switcher');
-            langSel.addEventListener('change', function() {
-              document.getElementById('lang-switcher-form').submit();
-            });
-          });
-        </script>
+        <!-- Ліва частина: Дім -->
+        <div class="nav-left">
+          <a href="{{ url_for('main.index') }}">{{ _('Дім') }}</a>
+        </div>
+        
+        <!-- Центральна частина: Соцмережі -->
+        <div class="nav-center">
+          <a href="{{ settings.facebook if settings and settings.facebook else 'https://facebook.com' }}" target="_blank" title="Facebook">
+            <img src="{{ url_for('static', filename='img/facebook.svg') }}" alt="Facebook">
+          </a>
+          <a href="{{ settings.instagram if settings and settings.instagram else 'https://instagram.com' }}" target="_blank" title="Instagram">
+            <img src="{{ url_for('static', filename='img/instagram.svg') }}" alt="Instagram">
+          </a>
+          <a href="{{ settings.telegram if settings and settings.telegram else 'https://t.me/' }}" target="_blank" title="Telegram">
+            <img src="{{ url_for('static', filename='img/telegram.svg') }}" alt="Telegram">
+          </a>
+          <a href="mailto:{{ settings.email if settings and settings.email else 'info@example.com' }}" title="Email">
+            <img src="{{ url_for('static', filename='img/email.svg') }}" alt="Email">
+          </a>
+        </div>
+        
+        <!-- Права частина: Перемикач мов -->
+        <div class="nav-right">
+          <form id="lang-switcher-form" method="get" style="display:inline;">
+            <select name="lang" id="lang-switcher" style="padding:6px 12px;border-radius:8px;border:1px solid #ddd;font-size:1em;background:#fff;">
+              <option value="uk" {% if g.get('lang', 'uk') == 'uk' %}selected{% endif %}>UA</option>
+              <option value="en" {% if g.get('lang') == 'en' %}selected{% endif %}>EN</option>
+              <option value="de" {% if g.get('lang') == 'de' %}selected{% endif %}>DE</option>
+              <option value="ru" {% if g.get('lang') == 'ru' %}selected{% endif %}>RU</option>
+            </select>
+          </form>
+        </div>
       </nav>
     </header>
 
@@ -196,9 +293,9 @@
     </main>
 
     <footer id="site-footer" style="position:fixed;left:0;right:0;bottom:0;width:100%;background:#f5f5f5;padding:1em;text-align:center;z-index:900;box-shadow:0 -2px 8px #eee;">
-      <a href="/privacy">Політика конфіденційності</a> |
-      <a href="/impressum">Імпресум</a> |
-      <a href="/contacts">Контакти</a>
+      <a href="/privacy">{{ _('Політика конфіденційності') }}</a> |
+      <a href="/impressum">{{ _('Імпресум') }}</a> |
+      <a href="/contacts">{{ _('Контакти') }}</a>
     </footer>
 
     <!-- ===== ВІДЖЕТ ЧАТУ ===== -->
@@ -222,6 +319,14 @@
     <!-- ===== /ВІДЖЕТ ЧАТУ ===== -->
 
     <script src="{{ url_for('static', filename='assist.js') }}"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var langSel = document.getElementById('lang-switcher');
+        langSel.addEventListener('change', function() {
+          document.getElementById('lang-switcher-form').submit();
+        });
+      });
+    </script>
     {% block scripts %}{% endblock %}
   </body>
 </html>
