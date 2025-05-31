@@ -65,7 +65,7 @@ a, .block-card a, .block-card h3 a, .block-card p a {
     padding: 44px 28px 36px 28px;
     background: var(--block-bg);
     border-radius: 30px;
-    box-shadow: 0 6px 32px 0 rgba(67, 48, 30, 0.08), 0 2px 48px 0 #dac7a258;
+    box-shadow: 0 6px 32px 0 rgba(183, 151, 122, 0.08), 0 2px 48px 0 #dac7a258;
     color: #786c6c;
     font-size: 1.21em;
     line-height: 1.74;
@@ -102,7 +102,7 @@ a, .block-card a, .block-card h3 a, .block-card p a {
     border-radius: 10px;
     border: 1.5px solid #a29d8e42;
     width: 100%;
-    background: #171716;
+    background: #a0a02d;
     font-size: 1em;
     font-family: var(--main-font);
     margin-top: 0.2em;
@@ -125,7 +125,7 @@ a, .block-card a, .block-card h3 a, .block-card p a {
     min-height: 380px;
     background: var(--block-bg);
     border-radius: 44px;
-    box-shadow: 0 6px 32px 0 rgba(0,0,0,0.12), 0 2px 96px 0 rgba(84,65,18,0.14);
+    box-shadow: 0 6px 32px 0 rgba(142, 97, 97, 0.12), 0 2px 96px 0 rgba(84,65,18,0.14);
     padding: 60px 46px 46px 46px;
     margin: 15mm 0;
     display: flex;
@@ -160,7 +160,7 @@ a, .block-card a, .block-card h3 a, .block-card p a {
     object-fit: contain; /* АККУРАТНОЕ ВПИСЫВАНИЕ! */
     border-radius: 36px;
     margin-bottom: 38px;
-    box-shadow: 0 6px 26px #0002;
+    box-shadow: 0 6px 26px rgba(207, 95, 95, 0.133);
     transition: box-shadow 0.22s;
     background: #f8f6ef;
 }
@@ -170,7 +170,7 @@ a, .block-card a, .block-card h3 a, .block-card p a {
 .block-card h3 {
     margin: 0 0 20px 0;
     font-size: 2.4em;
-    color: #181717;
+    color: #843636;
     font-weight: 800;
     letter-spacing: 0.01em;
     text-shadow: 0 1px 0 #fff2;
