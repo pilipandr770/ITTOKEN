@@ -1,18 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
-/* Основная цветовая палитра */
+/* Переменные */
 :root {
-    --page-bg: #0e0b00;
+    --page-bg: #111; /* или #151414, или #000 – выбери по вкусу */
     --block-bg: #fff;
     --main-font: 'Inter', 'Montserrat', Arial, sans-serif;
     --page-accent: #7a5c15;
     --page-accent-light: #cfb78c;
+    --header-footer-bg: #f7f5ed;
 }
 
-/* Фон и текст */
+
+
+/* ========== Хедер и Футер одинакового цвета ========== */
+header, footer#site-footer {
+    background: var(--header-footer-bg) !important;
+    color: #232323 !important;
+    box-shadow: 0 8px 48px #0002;
+    z-index: 1000;
+}
+header { position: fixed; top: 0; left: 0; right: 0; width: 100%; padding: 1.2em 0; }
+footer#site-footer { 
+    position: fixed;
+    left: 0; right: 0; bottom: 0; width: 100%;
+    padding: 1.2em 0.5em; text-align: center;
+    box-shadow: 0 -4px 32px #efe1caaa;
+    background: var(--header-footer-bg) !important;
+}
+
+/* ========== Общий фон, шрифты и анимации ========== */
 body {
     background: var(--page-bg) !important;
-    color: #232323;
+    color: #100f0f;
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -21,28 +40,77 @@ body {
 a, .block-card a, .block-card h3 a, .block-card p a {
     text-decoration: none !important;
     color: inherit;
+    transition: color 0.18s;
 }
 
-/* header и footer */
-header, footer#site-footer {
-    background: #f7f5ed !important;
-    color: #232323 !important;
-    box-shadow: 0 8px 48px #0002;
-    z-index: 1000;
+@keyframes cardFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
-header { 
-    position: fixed; top: 0; left: 0; right: 0; width: 100%; padding: 1.2em 0; 
+@keyframes fadeBg {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
-footer#site-footer { 
-    position: fixed; left: 0; right: 0; bottom: 0; width: 100%; 
-    padding: 1.2em 0.5em; text-align: center;
-    background: #f7f5ed !important;
-    color: #232323 !important;
-    box-shadow: 0 -4px 32px #efe1caaa;
+@keyframes popupIn {
+    0% { opacity: 0; transform: scale(0.88) translateY(90px);}
+    100% { opacity: 1; transform: scale(1) translateY(0);}
 }
 
-/* ================== Блоки на главной ================== */
+/* ========== КОНТЕНТНЫЕ/АДМИН-СТРАНИЦЫ ========== */
+.page-content, .page-container {
+    max-width: 660px;
+    margin: 80px auto 90px auto;
+    padding: 44px 28px 36px 28px;
+    background: var(--block-bg);
+    border-radius: 30px;
+    box-shadow: 0 6px 32px 0 rgba(67, 48, 30, 0.08), 0 2px 48px 0 #dac7a258;
+    color: #786c6c;
+    font-size: 1.21em;
+    line-height: 1.74;
+    letter-spacing: 0.01em;
+    text-align: left;
+    word-break: break-word;
+}
+.page-content h1, .page-content h2, .page-content h3,
+.page-container h1, .page-container h2, .page-container h3 { 
+    text-align: center; 
+    margin-top: 16px; 
+    margin-bottom: 30px; 
+    font-weight: 800;
+    font-family: var(--main-font);
+}
+.page-content ul, .page-content ol, .page-container ul, .page-container ol {
+    text-align: left;
+    display: block;
+    margin: 1.3em 0 1.3em 1.3em;
+    font-size: 1em;
+    line-height: 1.5;
+    padding-left: 1.5em;
+}
+.page-content li, .page-container li { margin-bottom: 0.4em; text-align: left; }
 
+.page-container form {
+    background: var(--page-bg);
+    border-radius: 16px;
+    box-shadow: 0 2px 16px #e0e0e020;
+    padding: 2em 1.5em 1.5em 1.5em;
+}
+.form-control {
+    padding: 0.6em 0.8em;
+    border-radius: 10px;
+    border: 1.5px solid #a29d8e42;
+    width: 100%;
+    background: #171716;
+    font-size: 1em;
+    font-family: var(--main-font);
+    margin-top: 0.2em;
+    margin-bottom: 0.4em;
+    box-sizing: border-box;
+}
+
+/* ========== Блоки на главной ========== */
 .blocks {
     display: flex;
     flex-direction: column;
@@ -51,8 +119,6 @@ footer#site-footer {
     padding: 0;
     margin: 0;
 }
-
-/* карточка блока */
 .block-card {
     width: calc(100vw - 30mm);
     max-width: 1200px;
@@ -67,7 +133,7 @@ footer#site-footer {
     align-items: center;
     cursor: pointer;
     text-align: center;
-    transition:
+    transition: 
       box-shadow 0.34s cubic-bezier(.6,1.4,.44,1.03),
       transform 0.24s cubic-bezier(.51,1.5,.57,1.02);
     border: none;
@@ -82,33 +148,25 @@ footer#site-footer {
 .blocks .block-card:nth-child(5) { animation-delay: 0.60s; }
 .blocks .block-card:nth-child(6) { animation-delay: 0.70s; }
 .blocks .block-card:nth-child(7) { animation-delay: 0.78s; }
-
-@keyframes cardFadeIn {
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
 .block-card:hover {
     box-shadow: 0 12px 64px 0 #bfae7e33, 0 8px 120px 0 #ead9b73a, 0 2px 96px 0 rgba(222, 216, 200, 0.18);
     transform: translateY(-6px) scale(1.017);
 }
-
 .block-card img {
     width: 100%;
     max-width: 760px;
-    height: 360px;
-    object-fit: cover;
+    max-height: 320px;
+    height: auto;
+    object-fit: contain; /* АККУРАТНОЕ ВПИСЫВАНИЕ! */
     border-radius: 36px;
     margin-bottom: 38px;
     box-shadow: 0 6px 26px #0002;
     transition: box-shadow 0.22s;
+    background: #f8f6ef;
 }
 .block-card img:hover {
     box-shadow: 0 12px 44px #bfae7e19;
 }
-
 .block-card h3 {
     margin: 0 0 20px 0;
     font-size: 2.4em;
@@ -151,13 +209,17 @@ footer#site-footer {
     box-shadow: 0 8px 32px #e7dac2, 0 4px 64px #d5c69d42;
     transform: translateY(-6px) scale(1.07);
 }
-.payment-card img { margin-bottom: 0.7em; border-radius: 14px; max-width: 100%; }
+.payment-card img { 
+    margin-bottom: 0.7em; 
+    border-radius: 14px; 
+    max-width: 100%;
+}
 
-/* кнопки */
+/* ========== КНОПКИ ========== */
 .btn, .btn-primary {
     display: inline-block;
     background: var(--page-accent);
-    color: #f2eeee !important;
+    color: #fff !important;
     border: none;
     border-radius: 12px;
     padding: 0.75em 2em;
@@ -172,7 +234,7 @@ footer#site-footer {
 }
 .btn:hover, .btn-primary:hover { background: var(--page-accent-light); color: #232323 !important; }
 
-/* ================================ POPUP BLOCK ================================ */
+/* ========== ПОПАП блок (детальный просмотр карточки) ========== */
 #block-detail-popup {
     display: none;
     position: fixed;
@@ -183,160 +245,98 @@ footer#site-footer {
     align-items: center;
     justify-content: center;
     animation: fadeBg 0.35s cubic-bezier(.19,1.1,.46,1.06);
-}
-@keyframes fadeBg {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    overflow: auto;
 }
 .popup-card {
     background: #fff;
     border-radius: 48px;
     box-shadow: 0 24px 72px 0 #0006, 0 4px 128px #b9a78530;
-    max-width: 760px;
-    width: 88vw;
+    max-width: 90vw;
+    max-height: 90vh;
+    width: 100%;
+    min-width: 250px;
     padding: 48px 32px 38px 32px;
     text-align: center;
     position: relative;
     animation: popupIn 0.55s cubic-bezier(.21,1.12,.47,1.08);
-}
-@keyframes popupIn {
-    0% { opacity: 0; transform: scale(0.88) translateY(90px);}
-    100% { opacity: 1; transform: scale(1) translateY(0);}
-}
-.popup-card img {
-    width: 100%;
-    max-width: 680px;
-    height: 340px;
-    object-fit: cover;
-    border-radius: 36px;
-    box-shadow: 0 6px 44px #0001;
-    margin-bottom: 36px;
-    margin-top: 2px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }
 .popup-close {
     position: absolute;
-    top: 16px;
-    right: 34px;
+    top: 18px;
+    right: 38px;
     font-size: 2.4em;
     background: none;
     border: none;
     cursor: pointer;
     color: #aaa;
     transition: color 0.17s;
+    z-index: 10;
 }
-.popup-close:hover { color: #1a1a1a; }
+.popup-card img {
+    width: auto;
+    max-width: 100%;
+    max-height: 35vh;
+    height: auto;
+    object-fit: contain;
+    border-radius: 24px;
+    box-shadow: 0 6px 44px #0001;
+    margin-bottom: 36px;
+    margin-top: 2px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background: #f8f6ef;
+}
 .popup-card h2 {
-    font-family: var(--main-font);
     font-size: 2.25em;
-    font-weight: 800;
     margin: 0 0 20px 0;
+    font-family: var(--main-font);
+    font-weight: 800;
     color: #1a1a1a;
 }
-.popup-card p, .popup-card .desc {
+.popup-card .desc, .popup-card p {
     font-size: 1.18em;
     color: #232323;
     margin-bottom: 0;
     font-family: var(--main-font);
-}
-
-/* ==================== КОНТЕНТНЫЕ/АДМИН-СТРАНИЦЫ, в том числе edit_block, contacts etc ==================== */
-
-.page-content, .page-container {
-    max-width: 660px;
-    margin: 80px auto 90px auto;
-    padding: 44px 28px 36px 28px;
-    background: var(--block-bg);
-    border-radius: 30px;
-    box-shadow: 0 6px 32px 0 rgba(34, 17, 1, 0.08), 0 2px 48px 0 #dac7a258;
-    color: #232323;
-    font-size: 1.21em;
-    line-height: 1.74;
-    letter-spacing: 0.01em;
-    text-align: left;
     word-break: break-word;
-}
-.page-content h1, .page-content h2, .page-content h3,
-.page-container h1, .page-container h2, .page-container h3
-{ 
-    text-align: center; 
-    margin-top: 16px; 
-    margin-bottom: 30px; 
-    font-weight: 800;
-    font-family: var(--main-font);
-}
-
-.page-content ul, .page-content ol, .page-container ul, .page-container ol {
+    overflow-wrap: break-word;
     text-align: left;
-    display: block;
-    margin: 1.3em 0 1.3em 1.3em;
-    font-size: 1em;
-    line-height: 1.5;
-    padding-left: 1.5em;
-}
-
-.page-content li, .page-container li {
-    margin-bottom: 0.4em;
-    text-align: left;
-}
-
-/* форма блока в админке */
-.page-container form {
-    background: var(--page-bg);
-    border-radius: 16px;
-    box-shadow: 0 2px 16px #e0e0e020;
-    padding: 2em 1.5em 1.5em 1.5em;
-}
-
-.form-control {
-    padding: 0.6em 0.8em;
-    border-radius: 10px;
-    border: 1.5px solid #a29d8e42;
+    line-height: 1.6;
     width: 100%;
-    background: #fcf8ea;
-    font-size: 1em;
-    font-family: var(--main-font);
-    margin-top: 0.2em;
-    margin-bottom: 0.4em;
-    box-sizing: border-box;
-}
-
-/* стили для ul в списке блоков в админке */
-.page-container ul  {
-    padding: 0;
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1em;
-    justify-content: center;
-    margin-top: 0.5em;
+    max-width: 90vw;
+    white-space: pre-line;
     margin-bottom: 1em;
 }
-.page-container li {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px #e0e0e055;
-    padding: 1em 1.5em;
-    min-width: 220px;
-    max-width: 320px;
-    text-align: center;
-    margin-bottom: 0.2em;
-    font-family: var(--main-font);
-}
 
-/* =================== Адаптив =================== */
 @media (max-width: 1100px) {
     .block-card { max-width: 98vw; padding: 24px 1.5vw; }
 }
 @media (max-width: 900px) {
     .block-card { min-height: 200px; padding: 14px 0.5em; width: 96vw !important; }
-    .block-card img { max-width: 94vw; height: 160px; }
+    .block-card img { max-width: 94vw; max-height: 160px; }
 }
 @media (max-width: 800px) {
     .page-content, .page-container { padding: 16px 4vw 24px 4vw; }
+    .popup-card {
+        border-radius: 20px;
+        max-width: 96vw;
+        max-height: 96vh;
+        padding: 18px 8px 13px 8px;
+    }
+    .popup-card img {
+        max-height: 22vh;
+        border-radius: 10px;
+    }
 }
 @media (max-width: 600px) {
     .block-card { min-height: 120px; padding: 0.5em 0.3em; width: 98vw !important; }
-    .block-card img { max-width: 98vw; height: 120px; }
+    .block-card img { max-width: 98vw; max-height: 120px; }
     body { padding-bottom: 120px; }
     .page-content, .page-container { 
         margin: 82px 1vw 100px 1vw !important;
