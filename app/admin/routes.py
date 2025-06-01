@@ -173,16 +173,34 @@ def product_new():
     form = ProductForm()
     categories = Category.query.filter_by(is_active=True).all()
     form.category_id.choices = [(c.id, c.name) for c in categories]
-    
     if form.validate_on_submit():
         product = Product()
-        form.populate_obj(product)
-        
+        # Явно зберігаємо всі мовні поля та інші поля
+        product.name = form.name.data
+        product.name_ua = form.name.data
+        product.name_en = form.name_en.data
+        product.name_de = form.name_de.data
+        product.name_ru = form.name_ru.data
+        product.slug = form.slug.data
+        product.description = form.description.data
+        product.description_ua = form.description.data
+        product.description_en = form.description_en.data
+        product.description_de = form.description_de.data
+        product.description_ru = form.description_ru.data
+        product.category_id = form.category_id.data
+        product.price = form.price.data
+        product.token_price = form.token_price.data
+        product.example_url = form.example_url.data
+        product.delivery_time = form.delivery_time.data
+        product.support_period = form.support_period.data
+        product.is_digital = form.is_digital.data
+        product.is_active = form.is_active.data
         # Обработка features как список
         if form.features.data:
             features_list = [f.strip() for f in form.features.data.split('\n') if f.strip()]
             product.features = features_list
-        
+        else:
+            product.features = []
         # Обработка изображения
         if form.image.data and hasattr(form.image.data, 'filename') and form.image.data.filename:
             filename = str(uuid.uuid4()) + '.' + form.image.data.filename.rsplit('.', 1)[1].lower()
@@ -190,12 +208,10 @@ def product_new():
             os.makedirs(upload_folder, exist_ok=True)
             form.image.data.save(os.path.join(upload_folder, filename))
             product.image = filename
-        
         db.session.add(product)
         db.session.commit()
         flash('Продукт создан успешно', 'success')
         return redirect(url_for('admin.product_edit', product_id=product.id))
-    
     return render_template('admin/product_form.html', form=form, title='Новый продукт')
 
 @admin.route('/product/<int:product_id>/edit', methods=['GET', 'POST'])
@@ -319,11 +335,22 @@ def categories():
 def category_new():
     """Создание новой категории"""
     form = CategoryForm()
-    
     if form.validate_on_submit():
         category = Category()
-        form.populate_obj(category)
-        
+        # Явно зберігаємо всі мовні поля та інші поля
+        category.name = form.name.data
+        category.name_ua = form.name.data
+        category.name_en = form.name_en.data
+        category.name_de = form.name_de.data
+        category.name_ru = form.name_ru.data
+        category.slug = form.slug.data
+        category.description = form.description.data
+        category.description_ua = form.description.data
+        category.description_en = form.description_en.data
+        category.description_de = form.description_de.data
+        category.description_ru = form.description_ru.data
+        category.is_active = form.is_active.data
+        category.order = form.order.data
         # Обработка изображения
         if form.image.data and hasattr(form.image.data, 'filename') and form.image.data.filename:
             filename = str(uuid.uuid4()) + '.' + form.image.data.filename.rsplit('.', 1)[1].lower()
@@ -331,12 +358,10 @@ def category_new():
             os.makedirs(upload_folder, exist_ok=True)
             form.image.data.save(os.path.join(upload_folder, filename))
             category.image = filename
-        
         db.session.add(category)
         db.session.commit()
         flash('Категория создана успешно', 'success')
         return redirect(url_for('admin.categories'))
-    
     return render_template('admin/category_form.html', form=form, title='Новая категория')
 
 @admin.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
