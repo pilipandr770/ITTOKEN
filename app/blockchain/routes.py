@@ -3,10 +3,11 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, g, abort
 from app.models import Token, Airdrop, AirdropParticipation, TokenSale, TokenPurchase
 from app.models import DaoProposal, DaoVote, User
+from app.forms import DaoProposalForm
 from app import db
 from flask_login import current_user, login_required
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 blockchain = Blueprint('blockchain', __name__)
 
@@ -24,12 +25,14 @@ def token_info():
 def airdrop_list():
     """Список активных аирдропов"""
     airdrops = Airdrop.query.filter_by(is_active=True).all()
-    return render_template('blockchain/airdrop_list.html', airdrops=airdrops)
+    token = Token.query.first()
+    return render_template('blockchain/airdrop_list.html', airdrops=airdrops, token=token)
 
 @blockchain.route('/airdrop/<int:airdrop_id>')
 def airdrop_detail(airdrop_id):
     """Детальная страница аирдропа"""
     airdrop = Airdrop.query.get_or_404(airdrop_id)
+    token = Token.query.first()
     
     user_participated = False
     if current_user.is_authenticated and current_user.wallet_address:
@@ -41,7 +44,7 @@ def airdrop_detail(airdrop_id):
         if participation:
             user_participated = True
     
-    return render_template('blockchain/airdrop_detail.html', airdrop=airdrop, user_participated=user_participated)
+    return render_template('blockchain/airdrop_detail.html', airdrop=airdrop, user_participated=user_participated, token=token)
 
 @blockchain.route('/airdrop/<int:airdrop_id>/participate', methods=['POST'])
 def airdrop_participate(airdrop_id):
@@ -105,7 +108,8 @@ def airdrop_participate(airdrop_id):
 def token_sale_list():
     """Список токенсейлов"""
     token_sales = TokenSale.query.filter_by(is_active=True).all()
-    return render_template('blockchain/token_sale_list.html', token_sales=token_sales)
+    token = Token.query.first()
+    return render_template('blockchain/token_sale_list.html', token_sales=token_sales, token=token)
 
 @blockchain.route('/token-sale/<int:token_sale_id>')
 def token_sale_detail(token_sale_id):
@@ -200,16 +204,19 @@ def dao_index():
     active_proposals = DaoProposal.query.filter_by(status='active').all()
     pending_proposals = DaoProposal.query.filter_by(status='pending').all()
     completed_proposals = DaoProposal.query.filter_by(status='completed').all()
+    token = Token.query.first()
     
     return render_template('blockchain/dao_index.html', 
                           active_proposals=active_proposals, 
                           pending_proposals=pending_proposals,
-                          completed_proposals=completed_proposals)
+                          completed_proposals=completed_proposals,
+                          token=token)
 
 @blockchain.route('/dao/proposal/<int:proposal_id>')
 def dao_proposal_detail(proposal_id):
     """Детальная страница предложения DAO"""
     proposal = DaoProposal.query.get_or_404(proposal_id)
+    token = Token.query.first()
     
     # Проверяем, голосовал ли уже пользователь
     user_voted = False
@@ -223,41 +230,42 @@ def dao_proposal_detail(proposal_id):
     return render_template('blockchain/dao_proposal_detail.html', 
                           proposal=proposal, 
                           user_voted=user_voted, 
-                          user_vote=user_vote)
+                          user_vote=user_vote,
+                          token=token)
 
 @blockchain.route('/dao/proposal/new', methods=['GET', 'POST'])
 @login_required
 def dao_proposal_new():
     """Создание нового предложения"""
-    if request.method == 'POST':
-        title = request.form.get('title')
-        description = request.form.get('description')
-        start_date = datetime.strptime(request.form.get('start_date'), '%Y-%m-%d')
-        end_date = datetime.strptime(request.form.get('end_date'), '%Y-%m-%d')
-        min_tokens = float(request.form.get('min_tokens', 1))
+    form = DaoProposalForm()
+    
+    if form.validate_on_submit():
+        # Рассчитываем даты начала и окончания
+        start_date = datetime.utcnow()
+        end_date = start_date + timedelta(days=form.duration_days.data)
         
         # Создаём новое предложение
         proposal = DaoProposal(
-            title=title,
-            description=description,
+            title=form.title.data,
+            description=form.description.data,
             author_id=current_user.id,
             start_date=start_date,
             end_date=end_date,
-            min_tokens_to_vote=min_tokens,
+            min_tokens_to_vote=form.min_tokens_to_vote.data,
             status='pending'  # Ожидает модерации или автоматического начала
         )
         
         # Копируем заголовок в поля переводов
-        proposal.title_ua = title
-        proposal.title_en = title
-        proposal.title_de = title
-        proposal.title_ru = title
+        proposal.title_ua = form.title.data
+        proposal.title_en = form.title.data
+        proposal.title_de = form.title.data
+        proposal.title_ru = form.title.data
         
         # Копируем описание в поля переводов
-        proposal.description_ua = description
-        proposal.description_en = description
-        proposal.description_de = description
-        proposal.description_ru = description
+        proposal.description_ua = form.description.data
+        proposal.description_en = form.description.data
+        proposal.description_de = form.description.data
+        proposal.description_ru = form.description.data
         
         db.session.add(proposal)
         db.session.commit()
@@ -265,7 +273,7 @@ def dao_proposal_new():
         flash('Ваше предложение успешно создано и отправлено на модерацию!')
         return redirect(url_for('blockchain.dao_index'))
     
-    return render_template('blockchain/dao_proposal_new.html')
+    return render_template('blockchain/dao_proposal_new.html', form=form)
 
 @blockchain.route('/dao/proposal/<int:proposal_id>/vote', methods=['POST'])
 @login_required

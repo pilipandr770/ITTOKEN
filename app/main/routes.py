@@ -172,8 +172,7 @@ def index():
     methods = PaymentMethod.query.filter_by(is_active=True).order_by(PaymentMethod.order).all()
     settings = Settings.query.first()
     token = Token.query.first()  # Получаем информацию о токене
-    return render_template('index.html', blocks=blocks, methods=methods, settings=settings, token=token,
-                         get_block_title=get_block_title, get_block_content=get_block_content)
+    return render_template('index.html', blocks=blocks, methods=methods, settings=settings, token=token)
 
 @main.route('/block/<slug>')
 def block_detail(slug):

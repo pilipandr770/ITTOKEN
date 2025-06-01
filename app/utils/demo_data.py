@@ -7,15 +7,14 @@ import random
 
 def create_demo_data():
     """Создает демоданные для проекта"""
-    print("Создание демоданных для проекта...")
-
-    # Очистка связанных таблиц (сначала дочерние, потом родительские)
+    print("Создание демоданных для проекта...")    # Очистка связанных таблиц (сначала дочерние, потом родительские)
     db.session.query(Product).delete()
     db.session.query(Category).delete()
     db.session.query(DaoProposal).delete()
     db.session.query(TokenSale).delete()
     db.session.query(Airdrop).delete()
     db.session.query(Token).delete()
+    db.session.query(Block).delete()
     db.session.commit()
     
     # Создаем токен
@@ -326,11 +325,115 @@ def create_demo_data():
                 gemäß Material Design-Standards und Veröffentlichung in Google Play.""",
             description_ru="""Разработка нативного мобильного приложения для Android с дизайном,
                 соответствующим стандартам Material Design, и публикацией в Google Play."""
-        ),
-    ]
+        ),    ]
     
     for product in products:
         db.session.add(product)
+    
+    db.session.commit()
+    
+    # Создаем блоки контента для главной страницы
+    blocks = [
+        Block(
+            title="Аирдроп ITST токенов",
+            title_ua="Аірдроп ITST токенів",
+            title_en="ITST Token Airdrop",
+            title_de="ITST Token Airdrop",
+            title_ru="Аирдроп ITST токенов",
+            content="Получите бесплатные токены ITST, участвуя в нашем аирдропе!",
+            content_ua="Отримайте безкоштовні токени ITST, беручи участь у нашому аірдропі!",
+            content_en="Get free ITST tokens by participating in our airdrop!",
+            content_de="Erhalten Sie kostenlose ITST-Token durch die Teilnahme an unserem Airdrop!",
+            content_ru="Получите бесплатные токены ITST, участвуя в нашем аирдропе!",
+            order=1,
+            is_active=True,
+            slug="airdrop",
+            is_top=False
+        ),
+        Block(
+            title="Токенсейл ITST",
+            title_ua="Токенсейл ITST",
+            title_en="ITST Token Sale",
+            title_de="ITST Token-Verkauf",
+            title_ru="Токенсейл ITST",
+            content="Купите токены ITST по специальной цене во время токенсейла!",
+            content_ua="Купуйте токени ITST за спеціальною ціною під час токенсейлу!",
+            content_en="Buy ITST tokens at a special price during the token sale!",
+            content_de="Kaufen Sie ITST-Token zu einem Sonderpreis während des Token-Verkaufs!",
+            content_ru="Купите токены ITST по специальной цене во время токенсейла!",
+            order=2,
+            is_active=True,
+            slug="tokensale",
+            is_top=False
+        ),
+        Block(
+            title="DAO управление",
+            title_ua="DAO управління",
+            title_en="DAO Governance",
+            title_de="DAO-Verwaltung",
+            title_ru="DAO управление",
+            content="Участвуйте в управлении проектом через децентрализованную автономную организацию!",
+            content_ua="Беріть участь в управлінні проектом через децентралізовану автономну організацію!",
+            content_en="Participate in project governance through a decentralized autonomous organization!",
+            content_de="Beteiligen Sie sich an der Projektführung durch eine dezentrale autonome Organisation!",
+            content_ru="Участвуйте в управлении проектом через децентрализованную автономную организацию!",
+            order=3,
+            is_active=True,
+            slug="dao",
+            is_top=False
+        ),
+        Block(
+            title="Telegram боты",
+            title_ua="Telegram боти",
+            title_en="Telegram Bots",
+            title_de="Telegram-Bots",
+            title_ru="Telegram боты",
+            content="Автоматизируйте ваш бизнес с помощью наших Telegram ботов!",
+            content_ua="Автоматизуйте ваш бізнес за допомогою наших Telegram ботів!",
+            content_en="Automate your business with our Telegram bots!",
+            content_de="Automatisieren Sie Ihr Geschäft mit unseren Telegram-Bots!",
+            content_ru="Автоматизируйте ваш бизнес с помощью наших Telegram ботов!",
+            order=4,
+            is_active=True,
+            slug="bots",
+            is_top=False
+        ),
+        Block(
+            title="Разработка сайтов",
+            title_ua="Розробка сайтів",
+            title_en="Website Development",
+            title_de="Website-Entwicklung",
+            title_ru="Разработка сайтов",
+            content="Создаем современные веб-сайты любой сложности!",
+            content_ua="Створюємо сучасні веб-сайти будь-якої складності!",
+            content_en="We create modern websites of any complexity!",
+            content_de="Wir erstellen moderne Websites jeder Komplexität!",
+            content_ru="Создаем современные веб-сайты любой сложности!",
+            order=5,
+            is_active=True,
+            slug="websites",
+            is_top=False
+        ),
+        Block(
+            title="IT Shop токен",
+            title_ua="IT Shop токен",
+            title_en="IT Shop Token",
+            title_de="IT Shop Token",
+            title_ru="IT Shop токен",
+            content="Узнайте больше о нашем токене ITST и его возможностях!",
+            content_ua="Дізнайтеся більше про наш токен ITST та його можливості!",
+            content_en="Learn more about our ITST token and its capabilities!",
+            content_de="Erfahren Sie mehr über unser ITST-Token und seine Möglichkeiten!",
+            content_ru="Узнайте больше о нашем токене ITST и его возможностях!",
+            order=0,
+            is_active=True,
+            slug="main",
+            is_top=True
+        )
+    ]
+    
+    for block in blocks:
+        db.session.add(block)
     
     db.session.commit()
     

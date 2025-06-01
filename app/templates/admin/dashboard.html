@@ -4,18 +4,107 @@
 {% block content %}
 <div class="page-container">
   <h1>{{ _('Адмін-панель') }}</h1>
-  <ul>
-    <li><a href="{{ url_for('admin.blocks') }}">{{ _('Блоки сайту') }}</a></li>
-    <li><a href="{{ url_for('admin.payment_methods') }}">{{ _('Способи оплати') }}</a></li>
-    <li><a href="{{ url_for('admin.payments') }}">{{ _('Історія оплат') }}</a></li>
-    <li><a href="{{ url_for('admin.settings') }}">{{ _('Налаштування соцмереж') }}</a></li>
-    <li><a href="{{ url_for('admin.logout') }}">{{ _('Вийти') }}</a></li>
-  </ul>
+  
+  <!-- Навигационное меню -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h6 class="mb-0">{{ _('Контент') }}</h6>
+        </div>
+        <div class="list-group list-group-flush">
+          <a href="{{ url_for('admin.blocks') }}" class="list-group-item list-group-item-action">
+            <i class="fas fa-cube"></i> {{ _('Блоки сайту') }}
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <h6 class="mb-0">{{ _('Магазин') }}</h6>
+        </div>
+        <div class="list-group list-group-flush">
+          <a href="{{ url_for('admin.products') }}" class="list-group-item list-group-item-action">
+            <i class="fas fa-box"></i> {{ _('Продукты') }}
+          </a>
+          <a href="{{ url_for('admin.categories') }}" class="list-group-item list-group-item-action">
+            <i class="fas fa-tags"></i> {{ _('Категории') }}
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-header bg-warning text-white">
+          <h6 class="mb-0">{{ _('Платежи') }}</h6>
+        </div>
+        <div class="list-group list-group-flush">
+          <a href="{{ url_for('admin.payment_methods') }}" class="list-group-item list-group-item-action">
+            <i class="fas fa-credit-card"></i> {{ _('Способи оплати') }}
+          </a>
+          <a href="{{ url_for('admin.payments') }}" class="list-group-item list-group-item-action">
+            <i class="fas fa-history"></i> {{ _('Історія оплат') }}
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-header bg-info text-white">
+          <h6 class="mb-0">{{ _('Настройки') }}</h6>
+        </div>
+        <div class="list-group list-group-flush">
+          <a href="{{ url_for('admin.settings') }}" class="list-group-item list-group-item-action">
+            <i class="fas fa-cog"></i> {{ _('Налаштування соцмереж') }}
+          </a>
+          <a href="{{ url_for('admin.logout') }}" class="list-group-item list-group-item-action text-danger">
+            <i class="fas fa-sign-out-alt"></i> {{ _('Вийти') }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <h2>{{ _('Останні оплати') }}</h2>
-  <ul>
-    {% for payment in payments %}
-      <li>{{ payment.created_at }}: {{ payment.amount }} ({{ _(payment.status) }})</li>
-    {% endfor %}
-  </ul>
+  <div class="card">
+    <div class="card-body">
+      {% if payments %}
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>{{ _('Дата') }}</th>
+              <th>{{ _('Сумма') }}</th>
+              <th>{{ _('Статус') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for payment in payments %}
+            <tr>
+              <td>{{ payment.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+              <td>{{ payment.amount }}</td>
+              <td>
+                {% if payment.status == 'paid' %}
+                  <span class="badge bg-success">{{ _(payment.status) }}</span>
+                {% elif payment.status == 'pending' %}
+                  <span class="badge bg-warning">{{ _(payment.status) }}</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ _(payment.status) }}</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted">{{ _('Платежей пока нет') }}</p>
+      {% endif %}
+    </div>
+  </div>
 </div>
 {% endblock %}

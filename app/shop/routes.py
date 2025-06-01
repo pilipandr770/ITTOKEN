@@ -14,7 +14,8 @@ def index():
     """Главная страница магазина с категориями"""
     categories = Category.query.filter_by(is_active=True).order_by(Category.order).all()
     featured_products = Product.query.filter_by(is_active=True).order_by(Product.created_at.desc()).limit(6).all()
-    return render_template('shop/index.html', categories=categories, products=featured_products)
+    token = Token.query.first()
+    return render_template('shop/index.html', categories=categories, products=featured_products, token=token)
 
 @shop.route('/shop/category/<slug>')
 def category(slug):
@@ -29,7 +30,11 @@ def product(slug):
     product = Product.query.filter_by(slug=slug, is_active=True).first_or_404()
     related_products = Product.query.filter_by(category_id=product.category_id, is_active=True)\
                                .filter(Product.id != product.id).limit(3).all()
-    return render_template('shop/product.html', product=product, related_products=related_products)
+    
+    # Получаем токен для отображения цены в токенах
+    token = Token.query.first()
+    
+    return render_template('shop/product.html', product=product, related_products=related_products, token=token)
 
 @shop.route('/shop/cart')
 def cart():

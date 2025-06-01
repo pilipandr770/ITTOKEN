@@ -126,8 +126,31 @@ class Product(db.Model):
     description_de = db.Column(db.Text)
     description_ru = db.Column(db.Text)
     
+    # Дополнительные поля для админ-панели
+    example_url = db.Column(db.String(512))  # Ссылка на пример работы
+    features = db.Column(db.JSON)  # Список функций/особенностей
+    delivery_time = db.Column(db.String(128))  # Время выполнения
+    support_period = db.Column(db.String(128))  # Период поддержки
+    
+    # Связи
+    images = db.relationship('ProductImage', backref='product', lazy='dynamic', cascade="all, delete-orphan")
+    
     def __repr__(self):
         return f'<Product {self.name}>'
+
+class ProductImage(db.Model):
+    """Дополнительные изображения продукта"""
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    image_path = db.Column(db.String(256))
+    title = db.Column(db.String(128))
+    description = db.Column(db.Text)
+    order = db.Column(db.Integer, default=1)
+    is_main = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<ProductImage {self.id}>'
 
 class Cart(db.Model):
     """Корзина покупок"""

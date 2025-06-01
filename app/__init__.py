@@ -14,6 +14,8 @@ def create_app():
 
     db.init_app(app)
     login_manager.init_app(app)
+    login_manager.login_view = 'admin.login'
+    login_manager.login_message = 'Будь ласка, увійдіть в систему для доступу до цієї сторінки.'
     babel.init_app(app)
 
     # Зберігати вибір мови в сесії
@@ -22,7 +24,9 @@ def create_app():
         lang = request.args.get('lang')
         if lang:
             session['lang'] = lang
-        g.lang = session.get('lang', None)    # Підключення blueprint'ів
+        g.lang = session.get('lang', None)
+    
+    # Підключення blueprint'ів
     from app.main.routes import main
     from app.admin.routes import admin
     from app.shop.routes import shop
@@ -33,6 +37,29 @@ def create_app():
     app.register_blueprint(shop)
     app.register_blueprint(blockchain)
     app.register_blueprint(assist_bp)
+
+    # Регистрируем template helper функции как глобальные в Jinja2
+    from app.main.routes import (
+        get_block_title, get_block_content, get_category_name, get_product_name, 
+        get_product_description, get_token_description, get_airdrop_title, 
+        get_airdrop_description, get_token_sale_title, get_token_sale_description,
+        get_dao_proposal_title, get_dao_proposal_description
+    )
+    
+    app.jinja_env.globals.update(
+        get_block_title=get_block_title,
+        get_block_content=get_block_content,
+        get_category_name=get_category_name,
+        get_product_name=get_product_name,
+        get_product_description=get_product_description,
+        get_token_description=get_token_description,
+        get_airdrop_title=get_airdrop_title,
+        get_airdrop_description=get_airdrop_description,
+        get_token_sale_title=get_token_sale_title,
+        get_token_sale_description=get_token_sale_description,
+        get_dao_proposal_title=get_dao_proposal_title,
+        get_dao_proposal_description=get_dao_proposal_description
+    )
 
     return app
 

@@ -2,6 +2,7 @@
 {% block title %}{{ _('Токенсейл') }} - {{ get_token_sale_title(token_sale) }}{% endblock %}
 
 {% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='js/web3_utils.js') }}"></script>
 <script src="{{ url_for('static', filename='js/blockchain.js') }}"></script>
@@ -52,21 +53,42 @@
                 <input type="text" class="form-control" id="total-price" readonly value="{{ token_sale.min_purchase * token_sale.price }}">
               </div>
             </div>
-            
-            {% if current_user.is_authenticated %}
-              <button id="connect-wallet-btn" type="button" class="btn btn-secondary mt-2">
-                {{ _('Подключить кошелек') }}
+              <!-- Способы покупки токенов -->
+            <div class="purchase-methods mt-4">
+              <h5>{{ _('Способы покупки') }}</h5>
+              
+              <!-- Uniswap -->
+              <a href="https://app.uniswap.org/#/swap?outputCurrency={{ token.contract_address }}&chain=polygon" 
+                 target="_blank" class="btn btn-primary btn-block mb-2">
+                <i class="fab fa-ethereum"></i> {{ _('Купить на Uniswap') }}
+              </a>
+              
+              <!-- Прямое взаимодействие с контрактом -->
+              <button id="buy-with-metamask-btn" type="button" class="btn btn-success btn-block mb-2">
+                <i class="fab fa-ethereum"></i> {{ _('Купить через MetaMask') }}
               </button>
               
-              <a href="{{ url_for('blockchain.token_purchase', token_sale_id=token_sale.id) }}" class="btn btn-primary btn-block mt-3">
-                {{ _('Продолжить покупку') }}
+              <!-- PolygonScan -->
+              <a href="https://polygonscan.com/token/{{ token.contract_address }}" 
+                 target="_blank" class="btn btn-info btn-block mb-2">
+                <i class="fas fa-external-link-alt"></i> {{ _('Посмотреть контракт') }}
               </a>
-            {% else %}
-              <div class="alert alert-info">
-                {{ _('Для покупки токенов вам необходимо войти в аккаунт.') }}
-                <a href="{{ url_for('admin.login', next=url_for('blockchain.token_sale_detail', token_sale_id=token_sale.id)) }}">{{ _('Войти') }}</a>
-              </div>
-            {% endif %}
+              
+              {% if current_user.is_authenticated %}
+                <button id="connect-wallet-btn" type="button" class="btn btn-secondary btn-block mt-3">
+                  {{ _('Подключить кошелек') }}
+                </button>
+                
+                <a href="{{ url_for('blockchain.token_purchase', token_sale_id=token_sale.id) }}" class="btn btn-outline-primary btn-block mt-2">
+                  {{ _('Традиционная покупка') }}
+                </a>
+              {% else %}
+                <div class="alert alert-warning mt-3">
+                  <small>{{ _('Для отслеживания покупок войдите в аккаунт') }}</small>
+                  <br><a href="{{ url_for('admin.login', next=url_for('blockchain.token_sale_detail', token_sale_id=token_sale.id)) }}" class="btn btn-sm btn-warning mt-2">{{ _('Войти') }}</a>
+                </div>
+              {% endif %}
+            </div>
             
             <div id="wallet-info-container" class="mt-4" style="display: none;">
               <div class="card bg-light">
@@ -123,8 +145,63 @@
           </table>
         </div>
       </div>
+    </div>  {% endif %}
+  
+  <!-- Техническая информация о токене -->
+  <div class="card mb-4">
+    <div class="card-header bg-dark text-white">
+      <h4 class="mb-0">{{ _('Техническая информация') }}</h4>
     </div>
-  {% endif %}
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6>{{ _('Данные контракта') }}</h6>
+          <table class="table table-sm">
+            <tr>
+              <td><strong>{{ _('Адрес контракта') }}:</strong></td>
+              <td>
+                <code class="text-break">{{ token.contract_address }}</code>
+                <button class="btn btn-sm btn-outline-secondary ml-2" onclick="copyToClipboard('{{ token.contract_address }}')">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>{{ _('Символ') }}:</strong></td>
+              <td>{{ token.symbol }}</td>
+            </tr>
+            <tr>
+              <td><strong>{{ _('Десятичные знаки') }}:</strong></td>
+              <td>{{ token.decimals }}</td>
+            </tr>
+            <tr>
+              <td><strong>{{ _('Общее предложение') }}:</strong></td>
+              <td>{{ "{:,.0f}".format(token.total_supply) }} {{ token.symbol }}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <h6>{{ _('Сеть и интеграции') }}</h6>
+          <div class="mb-3">
+            <a href="https://polygonscan.com/token/{{ token.contract_address }}" target="_blank" class="btn btn-outline-primary btn-sm">
+              <i class="fas fa-external-link-alt"></i> PolygonScan
+            </a>
+            <a href="https://app.uniswap.org/#/swap?outputCurrency={{ token.contract_address }}&chain=polygon" target="_blank" class="btn btn-outline-success btn-sm ml-2">
+              <i class="fab fa-ethereum"></i> Uniswap
+            </a>
+          </div>
+          <div class="mb-3">
+            <small class="text-muted">{{ _('Сеть') }}: Polygon (MATIC)</small><br>
+            <small class="text-muted">{{ _('Стандарт') }}: ERC-20</small><br>
+            <small class="text-muted">{{ _('Контракт верифицирован') }}: ✅</small>
+          </div>
+          <button id="add-to-metamask-btn" class="btn btn-warning btn-sm">
+            <i class="fab fa-ethereum"></i> {{ _('Добавить в MetaMask') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
   
   <div class="card mb-4">
     <div class="card-header bg-primary text-white">
@@ -132,10 +209,9 @@
     </div>
     <div class="card-body">
       <div class="row">
-        <div class="col-md-6">
-          <h5>{{ _('Для магазина') }}</h5>
+        <div class="col-md-6">          <h5>{{ _('Для магазина') }}</h5>
           <ul>
-            <li>{{ _('Оплата товаров и услуг со скидкой до 20%') }}</li>
+            <li>{{ _('Оплата товаров и услуг со скидкой до 20%%') }}</li>
             <li>{{ _('Кешбэк на покупки в токенах') }}</li>
             <li>{{ _('Эксклюзивный доступ к специальным предложениям') }}</li>
           </ul>
@@ -154,6 +230,11 @@
 </div>
 
 <script>
+  // Данные токена
+  const TOKEN_ADDRESS = '{{ token.contract_address }}';
+  const TOKEN_SYMBOL = '{{ token.symbol }}';
+  const TOKEN_DECIMALS = {{ token.decimals }};
+  
   // Скрипт для расчета суммы оплаты
   document.addEventListener('DOMContentLoaded', function() {
     const tokenAmountInput = document.getElementById('token-amount');
@@ -164,6 +245,88 @@
       const amount = parseFloat(this.value) || 0;
       const total = (amount * tokenPrice).toFixed(2);
       totalPriceInput.value = total;
+    });
+    
+    // Добавление токена в MetaMask
+    document.getElementById('add-to-metamask-btn').addEventListener('click', async function() {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_watchAsset',
+            params: {
+              type: 'ERC20',
+              options: {
+                address: TOKEN_ADDRESS,
+                symbol: TOKEN_SYMBOL,
+                decimals: TOKEN_DECIMALS,
+              },
+            },
+          });
+          alert('{{ _("Токен добавлен в MetaMask!") }}');
+        } catch (error) {
+          console.error('Ошибка добавления токена:', error);
+          alert('{{ _("Ошибка добавления токена в MetaMask") }}');
+        }
+      } else {
+        alert('{{ _("MetaMask не установлен!") }}');
+      }
+    });
+    
+    // Покупка через MetaMask (прямое взаимодействие с контрактом)
+    document.getElementById('buy-with-metamask-btn').addEventListener('click', async function() {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          
+          const amount = document.getElementById('token-amount').value;
+          if (!amount || amount <= 0) {
+            alert('{{ _("Введите количество токенов для покупки") }}');
+            return;
+          }
+          
+          // Здесь должна быть логика взаимодействия с контрактом
+          // Для примера показываем информацию
+          const message = `{{ _("Для покупки") }} ${amount} {{ token.symbol }}:\n\n` +
+                         `1. {{ _("Откройте MetaMask") }}\n` +
+                         `2. {{ _("Перейдите на Polygon сеть") }}\n` +
+                         `3. {{ _("Используйте адрес контракта") }}: ${TOKEN_ADDRESS}\n` +
+                         `4. {{ _("Или используйте Uniswap для покупки") }}`;
+          
+          alert(message);
+          
+          // Открываем Uniswap в новой вкладке
+          window.open(`https://app.uniswap.org/#/swap?outputCurrency=${TOKEN_ADDRESS}&chain=polygon`, '_blank');
+          
+        } catch (error) {
+          console.error('Ошибка подключения к MetaMask:', error);
+          alert('{{ _("Ошибка подключения к MetaMask") }}');
+        }
+      } else {
+        alert('{{ _("MetaMask не установлен! Установите MetaMask для покупки токенов.") }}');
+        window.open('https://metamask.io/', '_blank');
+      }
+    });
+  });
+  
+  // Функция копирования в буфер обмена
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+      // Показываем уведомление
+      const button = event.target.closest('button');
+      const originalHTML = button.innerHTML;
+      button.innerHTML = '<i class="fas fa-check"></i>';
+      button.classList.add('btn-success');
+      button.classList.remove('btn-outline-secondary');
+      
+      setTimeout(function() {
+        button.innerHTML = originalHTML;
+        button.classList.remove('btn-success');
+        button.classList.add('btn-outline-secondary');
+      }, 2000);
+    }, function(err) {
+      console.error('Ошибка копирования: ', err);
+      alert('{{ _("Ошибка копирования адреса") }}');
+    });
     });
   });
 </script>

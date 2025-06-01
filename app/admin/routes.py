@@ -2,9 +2,12 @@
 
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, logout_user, current_user, login_required
-from app.models import db, User, Block, PaymentMethod, Payment, Settings
-from app.forms import LoginForm, BlockForm, PaymentMethodForm, SettingsForm
+from app.models import db, User, Block, PaymentMethod, Payment, Settings, Product, Category, ProductImage
+from app.forms import (LoginForm, BlockForm, PaymentMethodForm, SettingsForm, 
+                      ProductForm, ProductImageForm, CategoryForm)
 from werkzeug.security import check_password_hash
+import os
+import uuid
 
 admin = Blueprint('admin', __name__)
 
@@ -26,6 +29,7 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and check_password_hash(user.password_hash, form.password.data):
             login_user(user)
+            flash('Успішно увійшли в систему!', 'success')
             return redirect(url_for('admin.dashboard'))
         flash('Невірний логін або пароль', 'danger')
     return render_template('login.html', form=form)
@@ -55,7 +59,6 @@ def blocks():
 @admin.route('/block/edit/<int:block_id>', methods=['GET', 'POST'])
 @admin_required
 def edit_block(block_id):
-    import os
     from werkzeug.utils import secure_filename
     block = Block.query.get_or_404(block_id)
     form = BlockForm(obj=block)
@@ -88,7 +91,6 @@ def payment_methods():
 @admin_required
 def add_payment_method():
     """Додавання нового способу оплати"""
-    import os
     from werkzeug.utils import secure_filename
     form = PaymentMethodForm()
     if form.validate_on_submit():
@@ -143,3 +145,213 @@ def settings():
         flash('Налаштування збережено', 'success')
         return redirect(url_for('admin.settings'))
     return render_template('admin/settings.html', form=form, settings=settings)
+
+# ===== УПРАВЛЕНИЕ ПРОДУКТАМИ =====
+
+@admin.route('/products')
+@admin_required
+def products():
+    """Список всех продуктов"""
+    products = Product.query.order_by(Product.created_at.desc()).all()
+    return render_template('admin/products.html', products=products)
+
+@admin.route('/product/new', methods=['GET', 'POST'])
+@admin_required
+def product_new():
+    """Создание нового продукта"""
+    form = ProductForm()
+    categories = Category.query.filter_by(is_active=True).all()
+    form.category_id.choices = [(c.id, c.name) for c in categories]
+    
+    if form.validate_on_submit():
+        product = Product()
+        form.populate_obj(product)
+        
+        # Обработка features как список
+        if form.features.data:
+            features_list = [f.strip() for f in form.features.data.split('\n') if f.strip()]
+            product.features = features_list
+        
+        # Обработка изображения
+        if form.image.data and hasattr(form.image.data, 'filename') and form.image.data.filename:
+            filename = str(uuid.uuid4()) + '.' + form.image.data.filename.rsplit('.', 1)[1].lower()
+            upload_folder = os.path.join('app', 'static', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            form.image.data.save(os.path.join(upload_folder, filename))
+            product.image = filename
+        
+        db.session.add(product)
+        db.session.commit()
+        flash('Продукт создан успешно', 'success')
+        return redirect(url_for('admin.product_edit', product_id=product.id))
+    
+    return render_template('admin/product_form.html', form=form, title='Новый продукт')
+
+@admin.route('/product/<int:product_id>/edit', methods=['GET', 'POST'])
+@admin_required
+def product_edit(product_id):
+    """Редактирование продукта"""
+    product = Product.query.get_or_404(product_id)
+    form = ProductForm(obj=product)
+    categories = Category.query.filter_by(is_active=True).all()
+    form.category_id.choices = [(c.id, c.name) for c in categories]
+    
+    # Заполнение features для формы
+    if product.features:
+        form.features.data = '\n'.join(product.features)
+    
+    if form.validate_on_submit():
+        form.populate_obj(product)
+        
+        # Обработка features как список
+        if form.features.data:
+            features_list = [f.strip() for f in form.features.data.split('\n') if f.strip()]
+            product.features = features_list
+        else:
+            product.features = []
+        
+        # Обработка изображения
+        if form.image.data and hasattr(form.image.data, 'filename') and form.image.data.filename:
+            filename = str(uuid.uuid4()) + '.' + form.image.data.filename.rsplit('.', 1)[1].lower()
+            upload_folder = os.path.join('app', 'static', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            form.image.data.save(os.path.join(upload_folder, filename))
+            product.image = filename
+        
+        db.session.commit()
+        flash('Продукт обновлен успешно', 'success')
+        return redirect(url_for('admin.product_edit', product_id=product.id))
+    
+    images = ProductImage.query.filter_by(product_id=product.id).order_by(ProductImage.order).all()
+    return render_template('admin/product_form.html', form=form, product=product, images=images, title='Редактировать продукт')
+
+@admin.route('/product/<int:product_id>/delete', methods=['POST'])
+@admin_required
+def product_delete(product_id):
+    """Удаление продукта"""
+    product = Product.query.get_or_404(product_id)
+    db.session.delete(product)
+    db.session.commit()
+    flash('Продукт удален', 'success')
+    return redirect(url_for('admin.products'))
+
+@admin.route('/product/<int:product_id>/add-image', methods=['GET', 'POST'])
+@admin_required
+def product_add_image(product_id):
+    """Добавление изображения к продукту"""
+    product = Product.query.get_or_404(product_id)
+    form = ProductImageForm()
+    
+    if form.validate_on_submit():
+        if form.image.data and hasattr(form.image.data, 'filename') and form.image.data.filename:
+            filename = str(uuid.uuid4()) + '.' + form.image.data.filename.rsplit('.', 1)[1].lower()
+            upload_folder = os.path.join('app', 'static', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            form.image.data.save(os.path.join(upload_folder, filename))
+            
+            # Создание записи изображения
+            image = ProductImage(
+                product_id=product_id,
+                image_path=filename,
+                title=form.title.data,
+                description=form.description.data,
+                is_main=form.is_main.data,
+                order=ProductImage.query.filter_by(product_id=product_id).count() + 1
+            )
+            
+            # Если изображение помечено как главное, убираем флаг с других
+            if form.is_main.data:
+                ProductImage.query.filter_by(product_id=product_id, is_main=True).update({'is_main': False})
+            
+            db.session.add(image)
+            db.session.commit()
+            flash('Изображение добавлено', 'success')
+            return redirect(url_for('admin.product_edit', product_id=product_id))
+    
+    return render_template('admin/product_image_form.html', form=form, product=product)
+
+@admin.route('/product-image/<int:image_id>/delete', methods=['POST'])
+@admin_required
+def product_image_delete(image_id):
+    """Удаление изображения продукта"""
+    image = ProductImage.query.get_or_404(image_id)
+    product_id = image.product_id
+    db.session.delete(image)
+    db.session.commit()
+    flash('Изображение удалено', 'success')
+    return redirect(url_for('admin.product_edit', product_id=product_id))
+
+# ===== УПРАВЛЕНИЕ КАТЕГОРИЯМИ =====
+
+@admin.route('/categories')
+@admin_required
+def categories():
+    """Список категорий"""
+    categories = Category.query.order_by(Category.order).all()
+    return render_template('admin/categories.html', categories=categories)
+
+@admin.route('/category/new', methods=['GET', 'POST'])
+@admin_required
+def category_new():
+    """Создание новой категории"""
+    form = CategoryForm()
+    
+    if form.validate_on_submit():
+        category = Category()
+        form.populate_obj(category)
+        
+        # Обработка изображения
+        if form.image.data and hasattr(form.image.data, 'filename') and form.image.data.filename:
+            filename = str(uuid.uuid4()) + '.' + form.image.data.filename.rsplit('.', 1)[1].lower()
+            upload_folder = os.path.join('app', 'static', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            form.image.data.save(os.path.join(upload_folder, filename))
+            category.image = filename
+        
+        db.session.add(category)
+        db.session.commit()
+        flash('Категория создана успешно', 'success')
+        return redirect(url_for('admin.categories'))
+    
+    return render_template('admin/category_form.html', form=form, title='Новая категория')
+
+@admin.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
+@admin_required
+def category_edit(category_id):
+    """Редактирование категории"""
+    category = Category.query.get_or_404(category_id)
+    form = CategoryForm(obj=category)
+    
+    if form.validate_on_submit():
+        form.populate_obj(category)
+        
+        # Обработка изображения
+        if form.image.data and hasattr(form.image.data, 'filename') and form.image.data.filename:
+            filename = str(uuid.uuid4()) + '.' + form.image.data.filename.rsplit('.', 1)[1].lower()
+            upload_folder = os.path.join('app', 'static', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            form.image.data.save(os.path.join(upload_folder, filename))
+            category.image = filename
+        
+        db.session.commit()
+        flash('Категория обновлена успешно', 'success')
+        return redirect(url_for('admin.categories'))
+    
+    products_count = Product.query.filter_by(category_id=category_id).count()
+    return render_template('admin/category_form.html', form=form, category=category, products_count=products_count, title='Редактировать категорию')
+
+@admin.route('/category/<int:category_id>/delete', methods=['POST'])
+@admin_required
+def category_delete(category_id):
+    """Удаление категории"""
+    category = Category.query.get_or_404(category_id)
+    products_count = Product.query.filter_by(category_id=category_id).count()
+    
+    if products_count > 0:
+        flash(f'Невозможно удалить категорию: в ней {products_count} продуктов', 'danger')
+        return redirect(url_for('admin.categories'))
+    
+    db.session.delete(category)
+    db.session.commit()
+    flash('Категория удалена', 'success')
+    return redirect(url_for('admin.categories'))
