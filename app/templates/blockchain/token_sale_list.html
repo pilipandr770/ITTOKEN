@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Токенсейлы') }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-4 mb-3">{{ _('Доступные токенсейлы') }}</h1>
+  
+  {% if token_sales %}
+    <div class="row">
+      {% for sale in token_sales %}
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">{{ get_token_sale_title(sale) }}</h5>
+            </div>
+            <div class="card-body">
+              <p>{{ get_token_sale_description(sale)|truncate(150) }}</p>
+              <p><strong>{{ _('Цена токена') }}:</strong> ${{ sale.price }}</p>
+              <p><strong>{{ _('Минимальная покупка') }}:</strong> {{ sale.min_purchase }} {{ token.symbol }}</p>
+              <p><strong>{{ _('Период') }}:</strong> {{ sale.start_date.strftime('%d.%m.%Y') }} - {{ sale.end_date.strftime('%d.%m.%Y') }}</p>
+              <a href="{{ url_for('blockchain.token_sale_detail', token_sale_id=sale.id) }}" class="btn btn-outline-primary">{{ _('Подробнее') }}</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">
+      {{ _('В настоящее время нет активных токенсейлов. Пожалуйста, проверьте позже.') }}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

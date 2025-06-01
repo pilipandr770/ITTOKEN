@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Токен проекта') }} - {{ token.symbol }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-4 mb-3">{{ _('Токен проекта') }} - {{ token.symbol }}</h1>
+  
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="token-info-box">
+            <h3>{{ token.name }} ({{ token.symbol }})</h3>
+            <p>{{ _('Адрес контракта') }}: <a href="https://polygonscan.com/token/{{ token.contract_address }}" target="_blank">{{ token.contract_address[:6] }}...{{ token.contract_address[-4:] }}</a></p>
+            <p>{{ _('Текущая цена') }}: ${{ token.token_price_usd }}</p>
+            <p>{{ _('Общее предложение') }}: {{ token.total_supply }}</p>
+            <p>{{ _('В обращении') }}: {{ token.circulating_supply }}</p>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="token-description">
+            <h4>{{ _('О токене') }}</h4>
+            <p>{{ get_token_description(token) }}</p>
+          </div>
+          
+          <div class="token-actions mt-4">
+            <a href="{{ url_for('blockchain.token_sale_list') }}" class="btn btn-primary">{{ _('Купить токены') }}</a>
+            <a href="{{ url_for('blockchain.airdrop_list') }}" class="btn btn-success ml-2">{{ _('Участвовать в аирдропе') }}</a>
+            <a href="{{ url_for('blockchain.dao_index') }}" class="btn btn-info ml-2">{{ _('DAO Управление') }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">{{ _('Токенсейл') }}</h5>
+        </div>
+        <div class="card-body">
+          <p>{{ _('Участвуйте в токенсейле и получите токены по специальной цене!') }}</p>
+          <a href="{{ url_for('blockchain.token_sale_list') }}" class="btn btn-outline-primary">{{ _('Подробнее о токенсейле') }}</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">{{ _('Аирдроп') }}</h5>
+        </div>
+        <div class="card-body">
+          <p>{{ _('Получите бесплатные токены, участвуя в аирдропе!') }}</p>
+          <a href="{{ url_for('blockchain.airdrop_list') }}" class="btn btn-outline-success">{{ _('Участвовать в аирдропе') }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -22,14 +22,16 @@ def create_app():
         lang = request.args.get('lang')
         if lang:
             session['lang'] = lang
-        g.lang = session.get('lang', None)
-
-    # Підключення blueprint'ів
+        g.lang = session.get('lang', None)    # Підключення blueprint'ів
     from app.main.routes import main
     from app.admin.routes import admin
+    from app.shop.routes import shop
+    from app.blockchain.routes import blockchain
     from .assist import assist_bp
     app.register_blueprint(main)
     app.register_blueprint(admin, url_prefix='/admin')
+    app.register_blueprint(shop)
+    app.register_blueprint(blockchain)
     app.register_blueprint(assist_bp)
 
     return app
