@@ -234,6 +234,156 @@ a, .block-card a, .block-card h3 a, .block-card p a {
 }
 .btn:hover, .btn-primary:hover { background: var(--page-accent-light); color: #232323 !important; }
 
+/* ========== BOOTSTRAP BUTTON ENHANCEMENTS ========== */
+/* Ensure Bootstrap buttons are properly visible and styled */
+.btn {
+    font-family: var(--main-font) !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    white-space: nowrap !important;
+}
+
+.btn-primary {
+    background-color: var(--page-accent) !important;
+    border-color: var(--page-accent) !important;
+}
+
+.btn-primary:hover {
+    background-color: #5a4310 !important;
+    border-color: #5a4310 !important;
+    transform: translateY(-1px) !important;
+}
+
+.btn-lg {
+    padding: 12px 24px !important;
+    font-size: 1.1rem !important;
+}
+
+.btn-secondary {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62 !important;
+    border-color: #545b62 !important;
+}
+
+/* Ensure submit buttons are always visible */
+button[type="submit"], input[type="submit"] {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
+}
+
+/* Admin form button styling */
+.bg-light {
+    background-color: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 8px !important;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.justify-content-between {
+    justify-content: space-between !important;
+}
+
+.align-items-center {
+    align-items: center !important;
+}
+
+.me-2 {
+    margin-right: 0.5rem !important;
+}
+
+/* Tab styling */
+.nav-tabs {
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+.nav-tabs .nav-link {
+    border: 1px solid transparent !important;
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: var(--page-accent) !important;
+    color: white !important;
+    border-color: var(--page-accent) !important;
+}
+
+/* Alert styling */
+.alert-info {
+    background-color: #d1ecf1 !important;
+    border-color: #bee5eb !important;
+    color: #0c5460 !important;
+    border-radius: 8px !important;
+}
+
+/* Card styling */
+.card {
+    border: 1px solid #dee2e6 !important;
+    border-radius: 12px !important;
+    background: var(--block-bg) !important;
+}
+
+.card-header {
+    background-color: #f8f9fa !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    border-top-left-radius: 12px !important;
+    border-top-right-radius: 12px !important;
+}
+
+/* Form styling */
+.form-control {
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+    padding: 0.75rem !important;
+}
+
+.form-control:focus {
+    border-color: var(--page-accent) !important;
+    box-shadow: 0 0 0 0.2rem rgba(122, 92, 21, 0.25) !important;
+}
+
+.form-label {
+    font-weight: 600 !important;
+    color: #495057 !important;
+}
+
+/* Ensure text is visible */
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+.form-text {
+    font-size: 0.875em !important;
+}
+
+/* Container styling */
+.container-fluid {
+    padding: 0 15px !important;
+}
+
+.row {
+    margin: 0 !important;
+}
+
+.col-md-8, .col-md-4, .col-md-6, .col-12 {
+    padding: 0 15px !important;
+}
+
 /* ========== ПОПАП блок (детальный просмотр карточки) ========== */
 #block-detail-popup {
     display: none;
@@ -312,6 +462,57 @@ a, .block-card a, .block-card h3 a, .block-card p a {
     max-width: 90vw;
     white-space: pre-line;
     margin-bottom: 1em;
+}
+
+/* ========== ADMIN PAGES SPACING ========== */
+/* Ensure admin pages don't hide behind header and footer */
+.admin-page {
+    margin-top: 80px !important; /* Space for fixed header (padding 1.2em + content) */
+    margin-bottom: 100px !important; /* Space for fixed footer (padding 1.2em + content) */
+    padding-top: 20px !important;
+    padding-bottom: 40px !important;
+    min-height: calc(100vh - 180px) !important; /* Ensure full height minus header/footer */
+}
+
+/* Admin container adjustments */
+.admin-page .container-fluid {
+    padding-top: 20px !important;
+    padding-bottom: 60px !important;
+}
+
+/* Ensure admin content is fully visible */
+.admin-page .card {
+    margin-bottom: 30px !important;
+}
+
+/* Admin form buttons - ensure they're above footer */
+.admin-page .bg-light {
+    margin-bottom: 40px !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+/* Admin header buttons spacing */
+.admin-page .d-flex.justify-content-between.align-items-center {
+    margin-bottom: 30px !important;
+    margin-top: 20px !important;
+}
+
+/* Special spacing for mobile admin pages */
+@media (max-width: 800px) {
+    .admin-page {
+        margin-top: 100px !important;
+        margin-bottom: 120px !important;
+        padding: 15px !important;
+    }
+    
+    .admin-page .container-fluid {
+        padding: 10px 5px 80px 5px !important;
+    }
+    
+    .admin-page .bg-light {
+        margin-bottom: 60px !important;
+    }
 }
 
 @media (max-width: 1100px) {
