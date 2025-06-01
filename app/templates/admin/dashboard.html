@@ -2,19 +2,23 @@
 {% block title %}{{ _('Адмінка') }}{% endblock %}
 
 {% block content %}
-<div class="page-container">
-  <h1>{{ _('Адмін-панель') }}</h1>
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <h1 class="text-center mb-4">{{ _('Адмін-панель') }}</h1>
+    </div>
+  </div>
   
   <!-- Навигационное меню -->
-  <div class="row mb-4">
+  <div class="row justify-content-center">
     <div class="col-md-3">
       <div class="card">
         <div class="card-header bg-primary text-white">
-          <h6 class="mb-0">{{ _('Контент') }}</h6>
+          <h6 class="mb-0"><i class="fas fa-cube me-2"></i>{{ _('Контент') }}</h6>
         </div>
         <div class="list-group list-group-flush">
           <a href="{{ url_for('admin.blocks') }}" class="list-group-item list-group-item-action">
-            <i class="fas fa-cube"></i> {{ _('Блоки сайту') }}
+            <i class="fas fa-cube me-2"></i> {{ _('Блоки сайту') }}
           </a>
         </div>
       </div>
@@ -23,14 +27,14 @@
     <div class="col-md-3">
       <div class="card">
         <div class="card-header bg-success text-white">
-          <h6 class="mb-0">{{ _('Магазин') }}</h6>
+          <h6 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>{{ _('Магазин') }}</h6>
         </div>
         <div class="list-group list-group-flush">
           <a href="{{ url_for('admin.products') }}" class="list-group-item list-group-item-action">
-            <i class="fas fa-box"></i> {{ _('Продукты') }}
+            <i class="fas fa-box me-2"></i> {{ _('Продукты') }}
           </a>
           <a href="{{ url_for('admin.categories') }}" class="list-group-item list-group-item-action">
-            <i class="fas fa-tags"></i> {{ _('Категории') }}
+            <i class="fas fa-tags me-2"></i> {{ _('Категории') }}
           </a>
         </div>
       </div>
@@ -39,14 +43,14 @@
     <div class="col-md-3">
       <div class="card">
         <div class="card-header bg-warning text-white">
-          <h6 class="mb-0">{{ _('Платежи') }}</h6>
+          <h6 class="mb-0"><i class="fas fa-credit-card me-2"></i>{{ _('Платежи') }}</h6>
         </div>
         <div class="list-group list-group-flush">
           <a href="{{ url_for('admin.payment_methods') }}" class="list-group-item list-group-item-action">
-            <i class="fas fa-credit-card"></i> {{ _('Способи оплати') }}
+            <i class="fas fa-credit-card me-2"></i> {{ _('Способи оплати') }}
           </a>
           <a href="{{ url_for('admin.payments') }}" class="list-group-item list-group-item-action">
-            <i class="fas fa-history"></i> {{ _('Історія оплат') }}
+            <i class="fas fa-history me-2"></i> {{ _('Історія оплат') }}
           </a>
         </div>
       </div>
@@ -100,8 +104,7 @@
             {% endfor %}
           </tbody>
         </table>
-      </div>
-      {% else %}
+      </div>      {% else %}
       <p class="text-muted">{{ _('Платежей пока нет') }}</p>
       {% endif %}
     </div>

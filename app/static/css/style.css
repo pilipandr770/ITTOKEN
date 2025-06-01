@@ -2,7 +2,7 @@
 
 /* Переменные */
 :root {
-    --page-bg: #111; /* или #151414, или #000 – выбери по вкусу */
+    --page-bg: #f8f9fa; /* светлый нейтральный фон */
     --block-bg: #fff;
     --main-font: 'Inter', 'Montserrat', Arial, sans-serif;
     --page-accent: #7a5c15;

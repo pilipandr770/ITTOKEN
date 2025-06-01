@@ -2,50 +2,66 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>{{ title }}</h1>
-    <a href="{{ url_for('admin.categories') }}" class="btn btn-secondary">
-        <i class="fas fa-arrow-left"></i> Назад к списку
-    </a>
-</div>
-
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Информация о категории</h5>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>{{ title }}</h1>
+                <a href="{{ url_for('admin.categories') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Назад к списку
+                </a>
             </div>
-            <div class="card-body">
-                <form method="POST" enctype="multipart/form-data">
-                    {{ form.hidden_tag() }}
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Информация о категории</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> <strong>Пояснения по заполнению:</strong><br>
+                        • <strong>Название</strong> - название категории для группировки товаров<br>
+                        • <strong>Slug</strong> - URL-адрес категории (создается автоматически)<br>
+                        • <strong>Описание</strong> - краткое описание категории<br>
+                        • <strong>Переводы</strong> - названия на других языках
+                    </div>
                     
-                    <!-- Навигация по табам -->
-                    <ul class="nav nav-tabs mb-3" id="categoryTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button">Основное</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="translations-tab" data-bs-toggle="tab" data-bs-target="#translations" type="button">Переводы</button>
-                        </li>
-                    </ul>
+                    <form method="POST" enctype="multipart/form-data" id="categoryForm">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Навигация по табам -->
+                        <ul class="nav nav-tabs mb-3" id="categoryTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button">Основное</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="translations-tab" data-bs-toggle="tab" data-bs-target="#translations" type="button">Переводы</button>
+                            </li>
+                        </ul>
                     
-                    <div class="tab-content" id="categoryTabsContent">
-                        <!-- Основная информация -->
+                    <div class="tab-content" id="categoryTabsContent">                        <!-- Основная информация -->
                         <div class="tab-pane fade show active" id="basic" role="tabpanel">
                             <div class="row">
                                 <div class="col-md-6">
                                     {{ form.name.label(class="form-label") }}
-                                    {{ form.name(class="form-control") }}
+                                    <span class="text-danger">*</span>
+                                    {{ form.name(class="form-control", placeholder="Например: Telegram боты") }}
+                                    <small class="form-text text-muted">Название категории для группировки товаров</small>
                                 </div>
                                 <div class="col-md-6">
                                     {{ form.slug.label(class="form-label") }}
-                                    {{ form.slug(class="form-control") }}
+                                    {{ form.slug(class="form-control", placeholder="telegram-boty") }}
+                                    <small class="form-text text-muted">URL-адрес категории (заполнится автоматически)</small>
                                 </div>
                             </div>
                             
                             <div class="mb-3">
                                 {{ form.description.label(class="form-label") }}
-                                {{ form.description(class="form-control", rows="4") }}
+                                {{ form.description(class="form-control", rows="4", placeholder="Краткое описание категории товаров...") }}
+                                <small class="form-text text-muted">Описание категории для клиентов</small>
                             </div>
                             
                             <div class="mb-3">
@@ -100,23 +116,34 @@
                                 {{ form.description_de.label(class="form-label") }}
                                 {{ form.description_de(class="form-control", rows="3") }}
                             </div>
-                            
-                            <div class="mb-3">
+                              <div class="mb-3">
                                 {{ form.description_ru.label(class="form-label") }}
                                 {{ form.description_ru(class="form-control", rows="3") }}
                             </div>
                         </div>
                     </div>
                     
-                    <div class="mt-4">
-                        {{ form.submit(class="btn btn-primary") }}
-                        <a href="{{ url_for('admin.categories') }}" class="btn btn-secondary">Отмена</a>
+                    <!-- Кнопки сохранения внутри формы -->
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Готовы сохранить категорию?</h6>
+                                <small class="text-muted">Проверьте введенные данные</small>
+                            </div>
+                            <div>
+                                <a href="{{ url_for('admin.categories') }}" class="btn btn-secondary me-2">
+                                    <i class="fas fa-times"></i> Отмена
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-save"></i> Сохранить категорию
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
-    
+    </div>    
     <div class="col-md-4">
         {% if category %}
         <!-- Информация о категории -->
