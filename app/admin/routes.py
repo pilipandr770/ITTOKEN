@@ -63,7 +63,19 @@ def edit_block(block_id):
     block = Block.query.get_or_404(block_id)
     form = BlockForm(obj=block)
     if form.validate_on_submit():
-        form.populate_obj(block)
+        # Явно зберігаємо всі мовні поля
+        block.title = form.title.data
+        block.title_ua = form.title.data
+        block.title_en = form.title_en.data
+        block.title_de = form.title_de.data
+        block.title_ru = form.title_ru.data
+        block.content = form.content.data
+        block.content_ua = form.content.data
+        block.content_en = form.content_en.data
+        block.content_de = form.content_de.data
+        block.content_ru = form.content_ru.data
+        block.is_active = form.is_active.data
+        block.is_top = form.is_top.data
         # Обробка зображення
         if form.image.data and hasattr(form.image.data, 'filename') and form.image.data.filename:
             file = form.image.data
@@ -73,7 +85,6 @@ def edit_block(block_id):
             file.save(os.path.join(upload_folder, filename))
             block.image = filename
         elif form.image.data and hasattr(form.image.data, 'filename') and not form.image.data.filename:
-            # Якщо файл не вибрано, не змінювати поле image
             pass
         db.session.commit()
         flash('Блок збережено', 'success')
@@ -195,21 +206,36 @@ def product_edit(product_id):
     form = ProductForm(obj=product)
     categories = Category.query.filter_by(is_active=True).all()
     form.category_id.choices = [(c.id, c.name) for c in categories]
-    
     # Заполнение features для формы
     if product.features:
         form.features.data = '\n'.join(product.features)
-    
     if form.validate_on_submit():
-        form.populate_obj(product)
-        
+        # Явно зберігаємо всі мовні поля та інші поля
+        product.name = form.name.data
+        product.name_ua = form.name.data
+        product.name_en = form.name_en.data
+        product.name_de = form.name_de.data
+        product.name_ru = form.name_ru.data
+        product.slug = form.slug.data
+        product.description = form.description.data
+        product.description_ua = form.description.data
+        product.description_en = form.description_en.data
+        product.description_de = form.description_de.data
+        product.description_ru = form.description_ru.data
+        product.category_id = form.category_id.data
+        product.price = form.price.data
+        product.token_price = form.token_price.data
+        product.example_url = form.example_url.data
+        product.delivery_time = form.delivery_time.data
+        product.support_period = form.support_period.data
+        product.is_digital = form.is_digital.data
+        product.is_active = form.is_active.data
         # Обработка features как список
         if form.features.data:
             features_list = [f.strip() for f in form.features.data.split('\n') if f.strip()]
             product.features = features_list
         else:
             product.features = []
-        
         # Обработка изображения
         if form.image.data and hasattr(form.image.data, 'filename') and form.image.data.filename:
             filename = str(uuid.uuid4()) + '.' + form.image.data.filename.rsplit('.', 1)[1].lower()
@@ -217,11 +243,9 @@ def product_edit(product_id):
             os.makedirs(upload_folder, exist_ok=True)
             form.image.data.save(os.path.join(upload_folder, filename))
             product.image = filename
-        
         db.session.commit()
         flash('Продукт обновлен успешно', 'success')
         return redirect(url_for('admin.product_edit', product_id=product.id))
-    
     images = ProductImage.query.filter_by(product_id=product.id).order_by(ProductImage.order).all()
     return render_template('admin/product_form.html', form=form, product=product, images=images, title='Редактировать продукт')
 
@@ -259,7 +283,7 @@ def product_add_image(product_id):
                 order=ProductImage.query.filter_by(product_id=product_id).count() + 1
             )
             
-            # Если изображение помечено как главное, убираем флаг с других
+            # Якщо изображение помечено как главное, убираем флаг с других
             if form.is_main.data:
                 ProductImage.query.filter_by(product_id=product_id, is_main=True).update({'is_main': False})
             
@@ -321,10 +345,21 @@ def category_edit(category_id):
     """Редактирование категории"""
     category = Category.query.get_or_404(category_id)
     form = CategoryForm(obj=category)
-    
     if form.validate_on_submit():
-        form.populate_obj(category)
-        
+        # Явно зберігаємо всі мовні поля та інші поля
+        category.name = form.name.data
+        category.name_ua = form.name.data
+        category.name_en = form.name_en.data
+        category.name_de = form.name_de.data
+        category.name_ru = form.name_ru.data
+        category.slug = form.slug.data
+        category.description = form.description.data
+        category.description_ua = form.description.data
+        category.description_en = form.description_en.data
+        category.description_de = form.description_de.data
+        category.description_ru = form.description_ru.data
+        category.is_active = form.is_active.data
+        category.order = form.order.data
         # Обработка изображения
         if form.image.data and hasattr(form.image.data, 'filename') and form.image.data.filename:
             filename = str(uuid.uuid4()) + '.' + form.image.data.filename.rsplit('.', 1)[1].lower()
@@ -332,11 +367,9 @@ def category_edit(category_id):
             os.makedirs(upload_folder, exist_ok=True)
             form.image.data.save(os.path.join(upload_folder, filename))
             category.image = filename
-        
         db.session.commit()
         flash('Категория обновлена успешно', 'success')
         return redirect(url_for('admin.categories'))
-    
     products_count = Product.query.filter_by(category_id=category_id).count()
     return render_template('admin/category_form.html', form=form, category=category, products_count=products_count, title='Редактировать категорию')
 
