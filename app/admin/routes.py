@@ -106,7 +106,25 @@ def add_payment_method():
     form = PaymentMethodForm()
     if form.validate_on_submit():
         method = PaymentMethod()
-        form.populate_obj(method)
+        # Явно зберігаємо всі мовні поля
+        method.name = form.name.data
+        method.name_ua = form.name.data
+        method.name_en = form.name_en.data
+        method.name_de = form.name_de.data
+        method.name_ru = form.name_ru.data
+        method.type = form.type.data
+        # details: парсимо JSON якщо можливо
+        import json
+        try:
+            method.details = json.loads(form.details.data) if form.details.data else None
+        except Exception:
+            method.details = form.details.data
+        method.is_active = form.is_active.data
+        # Опис
+        method.description_ua = form.description_ua.data
+        method.description_en = form.description_en.data
+        method.description_de = form.description_de.data
+        method.description_ru = form.description_ru.data
         # Обробка файлу QR-коду
         if form.qr_code.data and hasattr(form.qr_code.data, 'filename') and form.qr_code.data.filename:
             file = form.qr_code.data
@@ -116,13 +134,13 @@ def add_payment_method():
             file.save(os.path.join(upload_folder, filename))
             method.qr_code = filename
         elif form.qr_code.data and hasattr(form.qr_code.data, 'filename') and not form.qr_code.data.filename:
-            # Якщо файл не вибрано, не змінювати поле qr_code
             pass
         db.session.add(method)
         db.session.commit()
         flash('Метод оплати додано', 'success')
         return redirect(url_for('admin.payment_methods'))
-    return render_template('admin/payment_methods.html', form=form)
+    methods = PaymentMethod.query.order_by(PaymentMethod.order).all()
+    return render_template('admin/payment_methods.html', form=form, methods=methods)
 
 @admin.route('/payment-method/delete/<int:method_id>', methods=['POST'])
 @admin_required
