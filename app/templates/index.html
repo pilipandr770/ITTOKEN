@@ -38,9 +38,9 @@
       {% elif block_index == 2 %}
         onclick="location.href='{{ url_for('blockchain.dao_index') }}'"
       {% elif block_index == 3 %}
-        onclick="location.href='{{ url_for('shop.index') }}#bots'"
+        onclick="location.href='{{ url_for('shop.bots') }}'"
       {% elif block_index == 4 %}
-        onclick="location.href='{{ url_for('shop.index') }}#websites'"
+        onclick="location.href='{{ url_for('shop.websites') }}'"
       {% else %}
         onclick="openBlockDetail(
           '{{ url_for('static', filename='uploads/' ~ block.image) if block.image else '' }}',

@@ -217,6 +217,26 @@ def orders():
     user_orders = Order.query.filter_by(user_id=current_user.id).order_by(Order.created_at.desc()).all()
     return render_template('shop/orders.html', orders=user_orders)
 
+@shop.route('/shop/bots')
+def bots():
+    """Сторінка с Telegram-ботами"""
+    bots_category = Category.query.filter(Category.name.ilike('%бот%')).first()
+    products = []
+    if bots_category:
+        products = Product.query.filter_by(category_id=bots_category.id, is_active=True).all()
+    token = Token.query.first()
+    return render_template('shop/bots.html', products=products, token=token)
+
+@shop.route('/shop/websites')
+def websites():
+    """Сторінка с веб-сайтами"""
+    websites_category = Category.query.filter(Category.name.ilike('%сайт%')).first()
+    products = []
+    if websites_category:
+        products = Product.query.filter_by(category_id=websites_category.id, is_active=True).all()
+    token = Token.query.first()
+    return render_template('shop/websites.html', products=products, token=token)
+
 # API маршруты для взаимодействия с фронтендом (Ajax)
 @shop.route('/api/cart/update', methods=['POST'])
 def update_cart():
