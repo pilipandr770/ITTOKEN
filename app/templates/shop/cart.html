@@ -5,6 +5,10 @@
 <script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='js/web3_utils.js') }}"></script>
 <script src="{{ url_for('static', filename='js/blockchain.js') }}"></script>
+<script>
+  window.TOKEN_CONTRACT_ADDRESS = "{{ token_contract_address }}";
+  window.TOKEN_RECEIVER_ADDRESS = "{{ token_receiver_address }}";
+</script>
 {% endblock %}
 
 {% block content %}
@@ -99,4 +103,86 @@
     <div class="alert alert-info">{{ _('Ваша корзина пуста.') }}</div>
   {% endif %}
 </div>
+<script>
+// === Логіка для інтеграції MetaMask, балансу токенів, знижки та оплати токеном ===
+document.addEventListener('DOMContentLoaded', function() {
+    const tokenAddress = window.TOKEN_CONTRACT_ADDRESS;
+    const receiverAddress = window.TOKEN_RECEIVER_ADDRESS;
+    let userWallet = null;
+    // Кнопка підключення гаманця
+    let connectWalletBtn = document.getElementById('connect-wallet-btn');
+    if (!connectWalletBtn) {
+        connectWalletBtn = document.createElement('button');
+        connectWalletBtn.id = 'connect-wallet-btn';
+        connectWalletBtn.type = 'button';
+        connectWalletBtn.className = 'btn btn-outline-secondary ms-2';
+        connectWalletBtn.textContent = 'Підключити MetaMask';
+        document.querySelector('.payment-options').appendChild(connectWalletBtn);
+    }
+    // Кнопка оплати токеном
+    let payBtn = document.getElementById('pay-token-btn');
+    if (!payBtn) {
+        payBtn = document.createElement('button');
+        payBtn.id = 'pay-token-btn';
+        payBtn.type = 'button';
+        payBtn.className = 'btn btn-primary btn-lg ms-2';
+        payBtn.textContent = 'Оплатити токеном';
+        payBtn.style.display = 'none';
+        document.querySelector('.payment-options').appendChild(payBtn);
+    }
+    // Показати/сховати кнопку оплати токеном
+    const payTokenRadio = document.getElementById('payment_token');
+    document.querySelectorAll('input[name="payment_type"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (payTokenRadio.checked) {
+                payBtn.style.display = '';
+            } else {
+                payBtn.style.display = 'none';
+            }
+        });
+    });
+    // Підключення MetaMask
+    connectWalletBtn.addEventListener('click', async function() {
+        try {
+            userWallet = await connectWallet();
+            connectWalletBtn.textContent = userWallet.substring(0, 6) + '...' + userWallet.substring(38);
+            connectWalletBtn.classList.remove('btn-outline-secondary');
+            connectWalletBtn.classList.add('btn-success');
+        } catch (e) {
+            alert(e.message || 'Помилка підключення MetaMask');
+        }
+    });
+    // Оплата токеном
+    payBtn.addEventListener('click', async function() {
+        if (!window.ethereum) {
+            alert('Потрібен MetaMask!');
+            return;
+        }
+        if (!userWallet) {
+            alert('Підключіть гаманець!');
+            return;
+        }
+        try {
+            // Створити order через POST /shop/checkout (AJAX)
+            const resp = await fetch('/shop/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'payment_type=token'
+            });
+            const url = resp.url;
+            const orderIdMatch = url.match(/order\/(\d+)\/confirmation/);
+            if (!orderIdMatch) throw new Error('Не вдалося отримати orderId');
+            const orderId = orderIdMatch[1];
+            // Отримати суму для оплати (total_token)
+            const orderTokenAmount = {{ total_token|default(0) }};
+            // Виконати оплату токеном
+            const txHash = await payWithTokens(tokenAddress, receiverAddress, orderTokenAmount, orderId);
+            alert('Оплата успішна! Tx: ' + txHash);
+            window.location.href = `/shop/order/${orderId}/confirmation`;
+        } catch (e) {
+            alert(e.message || 'Помилка оплати токеном');
+        }
+    });
+});
+</script>
 {% endblock %}

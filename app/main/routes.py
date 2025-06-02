@@ -1,6 +1,6 @@
 # app/main/routes.py
 
-from flask import Blueprint, render_template, redirect, url_for, abort, g, session
+from flask import Blueprint, render_template, redirect, url_for, abort, g, session, current_app
 from app.models import Block, PaymentMethod, Settings, Category, Product
 from app.models import Token, Airdrop, TokenSale, DaoProposal
 from app import db
@@ -186,7 +186,12 @@ def block_detail(slug):
 def payment():
     """Сторінка з усіма методами оплати"""
     methods = PaymentMethod.query.filter_by(is_active=True).order_by(PaymentMethod.order).all()
-    return render_template('payment.html', methods=methods)
+    token_contract_address = current_app.config.get('TOKEN_CONTRACT_ADDRESS')
+    token_receiver_address = current_app.config.get('TOKEN_RECEIVER_ADDRESS')
+    return render_template('payment.html', methods=methods, config={
+        'TOKEN_CONTRACT_ADDRESS': token_contract_address,
+        'TOKEN_RECEIVER_ADDRESS': token_receiver_address
+    })
 
 @main.route('/privacy')
 def privacy():

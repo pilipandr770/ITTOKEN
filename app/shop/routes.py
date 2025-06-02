@@ -1,6 +1,6 @@
 # app/shop/routes.py
 
-from flask import Blueprint, render_template, redirect, url_for, request, flash, abort, jsonify, g, session
+from flask import Blueprint, render_template, redirect, url_for, request, flash, abort, jsonify, g, session, current_app
 from app.models import Product, Category, Cart, CartItem, Order, OrderItem, User, Payment, Token
 from app import db
 from flask_login import current_user, login_required
@@ -34,8 +34,10 @@ def product(slug):
     
     # Получаем токен для отображения цены в токенах
     token = Token.query.first()
+    token_contract_address = current_app.config.get('TOKEN_CONTRACT_ADDRESS')
+    token_receiver_address = current_app.config.get('TOKEN_RECEIVER_ADDRESS')
     
-    return render_template('shop/product.html', product=product, related_products=related_products, token=token)
+    return render_template('shop/product.html', product=product, related_products=related_products, token=token, token_contract_address=token_contract_address, token_receiver_address=token_receiver_address)
 
 @shop.route('/shop/cart')
 def cart():
@@ -66,8 +68,10 @@ def cart():
                 token_total += product.token_price * quantity
     
     token = Token.query.first()  # Получаем информацию о токене
-    
-    return render_template('shop/cart.html', cart_items=cart_items, total=total, token_total=token_total, token=token)
+    # Додаємо передачу адрес з config
+    token_contract_address = current_app.config.get('TOKEN_CONTRACT_ADDRESS')
+    token_receiver_address = current_app.config.get('TOKEN_RECEIVER_ADDRESS')
+    return render_template('shop/cart.html', cart_items=cart_items, total=total, token_total=token_total, token=token, token_contract_address=token_contract_address, token_receiver_address=token_receiver_address)
 
 @shop.route('/shop/cart/add', methods=['POST'])
 def add_to_cart():

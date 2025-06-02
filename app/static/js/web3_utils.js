@@ -15,53 +15,58 @@ const POLYGON_TESTNET_CONFIG = {
     blockExplorerUrls: ['https://mumbai.polygonscan.com/']
 };
 
-// Подключение к MetaMask
+// === Налаштування для Polygon Mainnet ===
+const POLYGON_MAINNET_CONFIG = {
+    chainId: '0x89', // 137 для Polygon Mainnet
+    chainName: 'Polygon Mainnet',
+    nativeCurrency: {
+        name: 'MATIC',
+        symbol: 'MATIC',
+        decimals: 18
+    },
+    rpcUrls: ['https://polygon-rpc.com/'],
+    blockExplorerUrls: ['https://polygonscan.com/']
+};
+
+// Подключение к MetaMask (Polygon Mainnet)
 async function connectWallet() {
     if (typeof window.ethereum !== 'undefined') {
         try {
-            // Запрашиваем список аккаунтов
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             const account = accounts[0];
-            
-            // Проверяем и переключаем сеть на Polygon Mumbai
-            await switchToPolygonNetwork();
-            
-            // Возвращаем адрес кошелька
+            await switchToPolygonMainnet();
             return account;
         } catch (error) {
             console.error("Ошибка подключения к MetaMask:", error);
             throw error;
         }
     } else {
-        // Если MetaMask не установлен
         const error = new Error("Пожалуйста, установите MetaMask!");
         error.code = "NO_METAMASK";
         throw error;
     }
 }
 
-// Переключение на сеть Polygon Mumbai
-async function switchToPolygonNetwork() {
+// Переключение на Polygon Mainnet
+async function switchToPolygonMainnet() {
     try {
-        // Пытаемся переключиться на сеть Polygon Mumbai
         await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: POLYGON_TESTNET_CONFIG.chainId }],
+            params: [{ chainId: POLYGON_MAINNET_CONFIG.chainId }],
         });
     } catch (error) {
-        // Если сеть не добавлена, добавляем ее
         if (error.code === 4902) {
             try {
                 await window.ethereum.request({
                     method: 'wallet_addEthereumChain',
-                    params: [POLYGON_TESTNET_CONFIG],
+                    params: [POLYGON_MAINNET_CONFIG],
                 });
             } catch (addError) {
-                console.error("Ошибка добавления сети Polygon Mumbai:", addError);
+                console.error("Ошибка добавления сети Polygon Mainnet:", addError);
                 throw addError;
             }
         } else {
-            console.error("Ошибка переключения на сеть Polygon Mumbai:", error);
+            console.error("Ошибка переключения на сеть Polygon Mainnet:", error);
             throw error;
         }
     }

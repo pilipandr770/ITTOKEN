@@ -5,6 +5,10 @@
 <script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='js/web3_utils.js') }}"></script>
 <script src="{{ url_for('static', filename='js/blockchain.js') }}"></script>
+<script>
+  window.TOKEN_CONTRACT_ADDRESS = "{{ token_contract_address }}";
+  window.TOKEN_RECEIVER_ADDRESS = "{{ token_receiver_address }}";
+</script>
 {% endblock %}
 
 {% block content %}
@@ -117,4 +121,53 @@
     </div>
   {% endif %}
 </div>
+
+<script>
+// === Логіка для інтеграції MetaMask, балансу токенів, знижки та оплати токеном ===
+document.addEventListener('DOMContentLoaded', function() {
+    // Кнопка підключення гаманця
+    const connectWalletBtn = document.getElementById('connect-wallet-btn');
+    const tokenBalanceSpan = document.getElementById('token-balance');
+    const tokenAddress = window.TOKEN_CONTRACT_ADDRESS;
+    const receiverAddress = window.TOKEN_RECEIVER_ADDRESS;
+    let userWallet = null;
+
+    // Підключення MetaMask
+    if (connectWalletBtn) {
+        connectWalletBtn.addEventListener('click', async function() {
+            try {
+                userWallet = await connectWallet();
+                connectWalletBtn.textContent = userWallet.substring(0, 6) + '...' + userWallet.substring(38);
+                connectWalletBtn.classList.remove('btn-outline-secondary');
+                connectWalletBtn.classList.add('btn-success');
+                // Показати баланс
+                if (tokenAddress && userWallet) {
+                    const balance = await getTokenBalance(tokenAddress, userWallet);
+                    if (tokenBalanceSpan) tokenBalanceSpan.textContent = balance;
+                }
+            } catch (e) {
+                alert(e.message || 'Помилка підключення MetaMask');
+            }
+        });
+    }
+
+    // Якщо гаманець вже підключено (MetaMask), показати баланс автоматично
+    if (window.ethereum && connectWalletBtn) {
+        window.ethereum.request({ method: 'eth_accounts' }).then(async (accounts) => {
+            if (accounts.length > 0) {
+                userWallet = accounts[0];
+                connectWalletBtn.textContent = userWallet.substring(0, 6) + '...' + userWallet.substring(38);
+                connectWalletBtn.classList.remove('btn-outline-secondary');
+                connectWalletBtn.classList.add('btn-success');
+                if (tokenAddress && userWallet) {
+                    const balance = await getTokenBalance(tokenAddress, userWallet);
+                    if (tokenBalanceSpan) tokenBalanceSpan.textContent = balance;
+                }
+            }
+        });
+    }
+
+    // TODO: Додати логіку для розрахунку знижки та ініціації оплати токеном при оформленні замовлення
+});
+</script>
 {% endblock %}
