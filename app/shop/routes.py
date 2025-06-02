@@ -22,7 +22,8 @@ def category(slug):
     """Страница категории с продуктами"""
     category = Category.query.filter_by(slug=slug, is_active=True).first_or_404()
     products = Product.query.filter_by(category_id=category.id, is_active=True).all()
-    return render_template('shop/category.html', category=category, products=products)
+    token = Token.query.first()
+    return render_template('shop/category.html', category=category, products=products, token=token)
 
 @shop.route('/shop/product/<slug>')
 def product(slug):
