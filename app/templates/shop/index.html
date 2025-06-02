@@ -8,12 +8,12 @@
   <!-- Категории товаров/услуг -->
   <div class="row mb-4">
     <div class="col-12">
-      <div class="categories-wrapper">
+      <div class="categories-wrapper d-flex flex-wrap gap-3 justify-content-center">
         {% for category in categories %}
-          <a href="{{ url_for('shop.category', slug=category.slug) }}" class="category-item">
-            <div class="category-card">
+          <a href="{{ url_for('shop.category', slug=category.slug) }}" class="category-item category-btn">
+            <div class="category-card text-center">
               {% if category.image %}
-                <img src="{{ url_for('static', filename='uploads/' ~ category.image) }}" alt="{{ get_category_name(category) }}">
+                <img src="{{ url_for('static', filename='uploads/' ~ category.image) }}" alt="{{ get_category_name(category) }}" style="display:block;margin:0 auto;max-width:100px;max-height:100px;object-fit:contain;">
               {% endif %}
               <h3>{{ get_category_name(category) }}</h3>
             </div>
@@ -73,4 +73,71 @@
     </div>
   </div>
 </div>
+<style>
+.category-btn {
+  display: inline-block;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  background: #f8f9fa;
+  padding: 0.5em 1.2em 0.8em 1.2em;
+  margin: 0.5em;
+  border: 2px solid #e0e0e0;
+}
+.category-btn:hover, .category-btn:focus {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 6px 24px rgba(0,123,255,0.15);
+  border-color: #007bff;
+  background: #e9f5ff;
+  text-decoration: none;
+}
+.categories-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+.category-card {
+  width: 210px;
+  min-height: 210px;
+  max-width: 220px;
+  min-width: 180px;
+  height: 230px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 18px 10px 10px 10px;
+  transition: box-shadow 0.2s;
+}
+.category-card img {
+  margin-bottom: 0.3em;
+  max-width: 90px;
+  max-height: 90px;
+  object-fit: contain;
+}
+.category-card h3 {
+  margin-top: 0.7em;
+  font-size: 1.15em;
+  color: #222;
+  font-weight: 600;
+  text-align: center;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.product-card img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+}
+</style>
 {% endblock %}

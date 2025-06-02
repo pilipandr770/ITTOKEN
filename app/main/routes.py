@@ -167,20 +167,14 @@ def get_dao_proposal_description(proposal):
 
 @main.route('/')
 def index():
-    """Головна сторінка з 6 блоками"""
+    """Головна сторінка з блоками"""
     blocks = Block.query.filter_by(is_active=True).order_by(Block.order).all()
     methods = PaymentMethod.query.filter_by(is_active=True).order_by(PaymentMethod.order).all()
     settings = Settings.query.first()
     token = Token.query.first()  # Получаем информацию о токене
-
-    # Додаємо вибірку продуктів для категорій "боти" та "сайти"
     bots_category = Category.query.filter(Category.name.ilike('%бот%')).first()
-    websites_category = Category.query.filter(Category.name.ilike('%сайт%')).first()
     bots_products = Product.query.filter_by(category_id=bots_category.id, is_active=True).order_by(Product.created_at.desc()).limit(3).all() if bots_category else []
-    websites_products = Product.query.filter_by(category_id=websites_category.id, is_active=True).order_by(Product.created_at.desc()).limit(3).all() if websites_category else []
-
-    return render_template('index.html', blocks=blocks, methods=methods, settings=settings, token=token,
-                           bots_products=bots_products, websites_products=websites_products)
+    return render_template('index.html', blocks=blocks, methods=methods, settings=settings, token=token, bots_products=bots_products)
 
 @main.route('/block/<slug>')
 def block_detail(slug):
