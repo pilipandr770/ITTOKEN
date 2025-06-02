@@ -63,42 +63,59 @@
     <h2 style="margin-bottom:0.8em;">Добавить способ оплаты</h2>
     <form method="post" enctype="multipart/form-data" action="{{ url_for('admin.add_payment_method') }}">
       {{ form.hidden_tag() if form }}
+      {% if form and form.errors %}
+        <div class="alert alert-danger" style="margin-bottom:1em;">
+          <ul style="margin:0;padding-left:1.2em;">
+            {% for field, errors in form.errors.items() %}
+              {% set label = form[field].label.text if field in form else field %}
+              {% for error in errors %}
+                <li><strong>{{ label }}:</strong> {{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
       <div class="form-group">
         <label for="name">Название метода:</label>
-        <input class="form-control" type="text" id="name" name="name" required style="width:100%;padding:10px;">
+        {{ form.name(class="form-control", id="name", required=True, style="width:100%;padding:10px;") }}
       </div>
-      
       <div class="form-group">
         <label for="type">Тип метода оплаты:</label>
-        <select class="form-control" id="type" name="type" required style="width:100%;padding:10px;">
-          <option value="stripe">Stripe</option>
-          <option value="paypal">PayPal</option>
-          <option value="bank">Банк/QR</option>
-          <option value="custom">Другой</option>
-        </select>
+        {{ form.type(class="form-control", id="type", required=True, style="width:100%;padding:10px;") }}
       </div>
-      
       <div class="form-group">
         <label for="details">Реквизиты (JSON формат):</label>
-        <textarea class="form-control" id="details" name="details" rows="5" 
-                 style="width:100%;padding:10px;font-family:monospace;min-height:120px;" 
-                 placeholder='{"iban": "UA123456789", "card": "1234 5678 9012 3456", "url": "https://example.com"}'></textarea>
+        {{ form.details(class="form-control", id="details", rows=5, style="width:100%;padding:10px;font-family:monospace;min-height:120px;", placeholder='{"address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"}') }}
         <small style="color:#666;display:block;margin-top:5px;">
-          Пример для банка: {"iban": "UA123456789", "account": "12345"}<br>
-          Пример для онлайн: {"url": "https://payment.example.com/link"}
+          Для криптовалюты: {"address": "..."} (BTC, ETH, USDC)<br>
+          Для банка: {"iban": "UA123456789", "account": "12345"}<br>
+          Для онлайн: {"url": "https://payment.example.com/link"}
         </small>
       </div>
-      
       <div class="form-group">
         <label for="qr_code">QR-код или логотип:</label>
-        <input class="form-control" type="file" id="qr_code" name="qr_code" accept="image/*" style="padding:10px;">
+        {{ form.qr_code(class="form-control", id="qr_code", accept="image/*", style="padding:10px;") }}
       </div>
-      
       <div class="form-group">
-        <input type="checkbox" id="is_active" name="is_active" checked style="margin-right:8px;">
+        <label for="description_ua">Опис (UA):</label>
+        {{ form.description_ua(class="form-control", id="description_ua", rows=2) }}
+      </div>
+      <div class="form-group">
+        <label for="description_en">Опис (EN):</label>
+        {{ form.description_en(class="form-control", id="description_en", rows=2) }}
+      </div>
+      <div class="form-group">
+        <label for="description_de">Опис (DE):</label>
+        {{ form.description_de(class="form-control", id="description_de", rows=2) }}
+      </div>
+      <div class="form-group">
+        <label for="description_ru">Опис (RU):</label>
+        {{ form.description_ru(class="form-control", id="description_ru", rows=2) }}
+      </div>
+      <div class="form-group">
+        {{ form.is_active(id="is_active", checked=True, style="margin-right:8px;") }}
         <label for="is_active"><strong>Активный метод оплаты</strong> (отображать на сайте)</label>
       </div>
-      
       <button class="btn btn-primary" type="submit" style="width:100%;padding:12px;font-size:1.1em;">Сохранить метод оплаты</button>
     </form>
   </div>
@@ -176,7 +193,7 @@
     </table>
   {% else %}
     <div style="text-align:center;padding:3em 0;color:#666;background:#f9f9f9;border-radius:12px;">
-      <p style="font-size:1.2em;">Нет сохраненных методов оплаты</p>
+      <p style="font-size:1.2em;">Нет сохранённых методов оплаты</p>
       <p>Используйте форму выше для добавления метода оплаты.</p>
     </div>
   {% endif %}

@@ -96,7 +96,8 @@ def edit_block(block_id):
 def payment_methods():
     """Список способів оплати"""
     methods = PaymentMethod.query.order_by(PaymentMethod.order).all()
-    return render_template('admin/payment_methods.html', methods=methods)
+    form = PaymentMethodForm()
+    return render_template('admin/payment_methods.html', methods=methods, form=form)
 
 @admin.route('/payment-method/add', methods=['GET', 'POST'])
 @admin_required

@@ -35,6 +35,9 @@ class PaymentMethodForm(FlaskForm):
         ('stripe', 'Stripe'),
         ('paypal', 'PayPal'),
         ('bank', 'Банк/QR'),
+        ('btc', 'Bitcoin (BTC)'),
+        ('eth', 'Ethereum (ETH)'),
+        ('usdc', 'USD Coin (USDC)'),
         ('custom', 'Інший')
     ])
     details = TextAreaField('Реквізити (JSON)', validators=[Optional(), Length(max=2000)])
