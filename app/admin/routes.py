@@ -277,6 +277,8 @@ def product_edit(product_id):
             os.makedirs(upload_folder, exist_ok=True)
             form.image.data.save(os.path.join(upload_folder, filename))
             product.image = filename
+        elif not product.image:
+            product.image = None
         db.session.commit()
         flash('Продукт обновлен успешно', 'success')
         return redirect(url_for('admin.product_edit', product_id=product.id))
@@ -317,7 +319,7 @@ def product_add_image(product_id):
                 order=ProductImage.query.filter_by(product_id=product_id).count() + 1
             )
             
-            # Якщо изображение помечено как главное, убираем флаг с других
+            # Якщо изображение помечено как главное, убираем флаг з інших
             if form.is_main.data:
                 ProductImage.query.filter_by(product_id=product_id, is_main=True).update({'is_main': False})
             
